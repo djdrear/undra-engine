@@ -1,2371 +1,2540 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>UNDRA ENGINE v1.0</title>
-    <!-- BLOCK 7: UI-Upgrade -->
-  <style>
-    …<!-- BLOCK 7 START -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Heldenbrief - Edition 2025</title>
+
 <style>
-body {
-  background: #0f0f0f;
-  color: #e0e0e0;
-  font-family: 'Cinzel', serif;
-  margin: 0;
-  padding: 0;
+:root {
+  --bg-dark: #050306;
+  --panel-bg: linear-gradient(135deg, #1a121a 0%, #0a050a 100%);
+  --stone-bg: radial-gradient(circle, #3d3d3d 0%, #1a1a1a 100%);
+  --gold: #d4af37;
+  --gold-bright: #f8e7b0;
+  --gold-shadow: rgba(212, 175, 55, 0.5);
+  --text: #eaddca;
+  --muted: #a69586;
+  --danger: #ff4b5c;
+  --header-gradient: linear-gradient(to bottom, rgba(60,10,10,0.9), rgba(30,5,10,1));
+  --font-header: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+  --font-body: 'Georgia', serif;
 }
 
-h2, h3 {
-  font-family: 'Cinzel', serif;
-  color: #ffd700;
-  margin-bottom: 6px;
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-dark);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+#app-shell {
+  width: 950px;
+  margin: 20px auto;
+  background: var(--panel-bg);
+  border: 2px solid var(--gold);
+  position: relative;
+  border-radius: 8px;
+  box-shadow: 0 10px 50px #000;
+  overflow: hidden;
+}
+
+/* HEADER */
+
+header {
+  padding: 20px;
+  background: var(--header-gradient);
+  border-bottom: 2px solid var(--gold);
+  text-align: center;
+  position: relative;
+}
+
+header h1 {
+  margin: 0;
+  font-family: var(--font-header);
+  color: var(--gold-bright);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+}
+
+/* STEPS / PANELS */
+
+.step-content {
+  display: none;
+  padding: 20px;
+}
+
+.step-content.active {
+  display: block;
 }
 
 .panel {
-  padding: 20px;
-  border: 1px solid #333;
-  background: #1a1a1a;
-  margin: 10px;
-  border-radius: 6px;
-}
-
-.panel.hidden {
-  display: none;
-}
-
-.section {
+  border: 1px solid var(--gold);
   margin-bottom: 20px;
+  border-radius: 5px;
+  background: rgba(0,0,0,0.4);
+  overflow: hidden;
 }
 
-label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: bold;
-  color: #ccc;
+.panel-header {
+  background: var(--header-gradient);
+  padding: 8px 15px;
+  border-bottom: 1px solid var(--gold);
+  color: var(--gold-bright);
+  font-family: var(--font-header);
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
 }
 
-input[type="text"],
-input[type="number"],
-select,
-textarea {
-  width: 100%;
-  padding: 6px;
-  margin-top: 2px;
-  background: #222;
-  color: #fff;
-  border: 1px solid #444;
-  border-radius: 4px;
-  font-family: 'Cinzel', serif;
-}
+/* GRIDS */
 
-textarea {
-  height: 80px;
-  resize: vertical;
-}
-
-button {
-  background: #444;
-  color: #fff;
-  border: none;
-  padding: 8px 12px;
-  margin: 4px 2px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: 'Cinzel', serif;
-  transition: background 0.2s ease;
-}
-
-button:hover {
-  background: #666;
-}
-
-.btn-accent {
-  background: #ffd700;
-  color: #000;
-}
-
-.btn-accent:hover {
-  background: #ffec80;
+.identity-grid {
+  display: grid;
+  grid-template-columns: 180px 1fr 240px;
+  gap: 15px;
+  padding: 15px;
 }
 
 .attr-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 6px;
-}
-
-.two-col {
-  display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 10px 30px;
+  padding: 15px;
 }
 
-.multi-list {
+.origin-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 6px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px;
+  background: var(--gold);
+  border: 1px solid var(--gold);
+  height: 300px;
 }
 
-.list-line {
+.origin-col {
+  background: #0a050a;
+  overflow-y: auto;
+  padding: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold) #000;
+}
+
+.origin-col h4 {
+  color: var(--gold);
+  text-align: center;
+  border-bottom: 1px solid var(--gold-shadow);
+  margin-top: 0;
+  font-size: 14px;
+}
+
+/* BUTTONS */
+
+.btn-main {
+  padding: 10px 20px;
+  border: 2px solid var(--gold);
+  background: #2a1a0a;
+  color: var(--gold);
+  cursor: pointer;
+  font-weight: bold;
+  font-family: var(--font-header);
+  text-transform: uppercase;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.btn-next {
+  background: linear-gradient(to bottom, #8a1515, #500505);
+  color: white;
+}
+
+/* kleine Up-/Down-Buttons für Attribute */
+
+.btn-step {
+  width: 22px;
+  height: 22px;
+  background: #1a121a;
+  border: 1px solid var(--gold);
+  color: var(--gold-bright);
+  cursor: pointer;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+}
+
+.btn-plus {
+  background: #2a1a0a;
+}
+
+.btn-step:disabled,
+.btn-plus:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.btn-upgrade {
+  width: 22px;
+  height: 22px;
+  background: #1a121a;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+}
+
+.btn-upgrade:hover {
+  box-shadow: 0 0 6px var(--gold-shadow);
+}
+
+/* EFFECTS */
+
+.glow {
+  box-shadow: 0 0 10px var(--gold);
+  border-color: var(--gold-bright);
+  color: var(--gold-bright);
+}
+
+/* ATTR ROWS */
+
+.attr-row {
+  display: grid;
+  grid-template-columns: 1fr auto 40px auto;
+  gap: 10px;
+  align-items: center;
+  padding: 4px;
+  border-bottom: 1px solid rgba(212,175,55,0.1);
+}
+
+.val-box {
+  background: #000;
+  border: 1px solid var(--gold);
+  text-align: center;
+  color: var(--gold-bright);
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+/* LISTEN / TAGS */
+
+.check-item {
+  display: block;
+  padding: 5px;
+  cursor: pointer;
+  border-bottom: 1px solid #222;
+  font-size: 12px;
+}
+
+.check-item:hover {
+  background: rgba(212,175,55,0.1);
+}
+
+.trait-tag {
+  display: inline-block;
+  background: rgba(212,175,55,0.1);
+  border: 1px solid var(--gold-shadow);
+  padding: 2px 8px;
+  margin: 2px;
+  border-radius: 10px;
+  font-size: 11px;
+}
+
+/* FINAL SUMMARY */
+
+.summary-panel-final {
+  background: var(--stone-bg);
+  padding: 30px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 50px #000;
+  border: 2px solid #333;
+}
+
+.ornamental-frame {
+  border: 1px solid #444;
+  padding: 20px;
+  position: relative;
+}
+
+.ornamental-frame::before {
+  content: "❦";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  color: var(--gold);
+  font-size: 20px;
+}
+
+/* TIMELINE */
+
+#timeline {
+  position: absolute;
+  right: 0;
+  top: 100px;
+  width: 100px;
+  background: rgba(0,0,0,0.85);
+  border-left: 1px solid var(--gold);
+  padding: 10px;
+  height: 500px;
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  overflow-y: auto;
+  z-index: 10;
+  border-radius: 8px 0 0 8px;
+}
+
+.day-check {
+  font-size: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 4px 0;
   border-bottom: 1px solid #333;
+  padding: 2px 0;
 }
 
-.stat-bar {
-  background: #333;
-  height: 12px;
-  border-radius: 6px;
+/* PORTRAIT */
+
+.portrait-frame {
+  width: 160px;
+  height: 210px;
+  border: 2px solid var(--gold);
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
-  margin-bottom: 4px;
+  border-radius: 8px;
 }
 
-.stat-bar-fill {
-  background: #ffd700;
+.portrait-frame img {
+  width: 100%;
   height: 100%;
+  object-fit: cover;
 }
 
-.stat-bar-label {
+/* STATUS TOP GRID */
+
+.status-top-grid {
+  display: grid;
+  grid-template-columns: 1fr 180px 240px;
+  gap: 2px;
+  background: var(--gold);
+  border: 1px solid var(--gold);
+  margin-bottom: 20px;
+}
+
+.status-cell {
+  background: #0a050a;
+  padding: 15px;
+  font-size: 12px;
+}
+
+/* SKILLS / INVENTAR */
+
+.skill-item {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
+  align-items: center;
+  padding: 3px 6px;
+  background: rgba(0,0,0,0.3);
   margin-bottom: 2px;
+  border-radius: 4px;
+  font-size: 11px;
 }
 
-.pill {
-  background: #444;
-  color: #fff;
-  padding: 2px 6px;
-  border-radius: 12px;
-  font-size: 12px;
-  margin-left: 6px;
+.inventar-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  padding: 15px;
 }
 
-.small {
-  font-size: 12px;
-  color: #aaa;
+.inv-slot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px;
+  border: 1px solid #444;
+  background: rgba(0,0,0,0.4);
+  font-size: 10px;
 }
 
-hr {
-  border: none;
-  border-top: 1px solid #333;
-  margin: 12px 0;
+/* MODALS */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.9);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-box {
+  background: var(--panel-bg);
+  border: 2px solid var(--gold);
+  padding: 30px;
+  width: 400px;
+  text-align: center;
+  border-radius: 10px;
+}
+
+/* FORM ELEMENTE */
+
+input[type="text"],
+input[type="number"] {
+  background: #000;
+  border: 1px solid #444;
+  color: var(--gold-bright);
+  padding: 5px;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.rule-hint-red {
+  color: var(--danger);
+  font-size: 11px;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 10px;
+  font-style: italic;
 }
 </style>
-<!-- BLOCK 7 END -->
 </head>
 
-<!-- BLOCK 1A START -->
-<div id="page1" class="panel panel-left">
-  <div class="section">
-    <h3>URSPRUNG & BLUTLINIEN</h3>
+<body>
+<div id="app-shell">
 
-    <label>Name des Helden
-      <input type="text" id="char-name" placeholder="Name deines Helden">
-    </label>
+  <div id="timeline"></div>
 
-    <label>Titel / Beiname
-      <input type="text" id="char-title" placeholder="z. B. Der Verlorene, Flammenkind">
-    </label>
+  <header>
+    <h1 id="main-title">Heldenbrief</h1>
+    <div id="header-sub-data" style="color: var(--gold); font-size: 13px; margin-top: 5px;"></div>
+  </header>
 
-    <label>Portrait hochladen
-      <input type="file" id="char-portrait" accept="image/*">
-    </label>
-    <div id="char-portrait-preview" class="small">Kein Portrait geladen.</div>
+  <!-- ================= STEP 1 ================= -->
 
-    <div class="two-col" style="margin-top:10px;">
-      <div>
-        <label>Rasse
-          <select id="char-race">
-            <option value="human">Mensch</option>
-            <option value="dwarf">Zwerg</option>
-            <option value="halfling">Halbling</option>
-            <option value="dragonborn">Drachgeborene</option>
-            <option value="lizardfolk">Echsenmenschen</option>
-            <option value="serpentfolk">Schlangenmenschen</option>
-            <option value="orc">Ork</option>
-            <option value="goblin">Goblin</option>
-            <option value="gnome">Gnom</option>
-            <option value="tabaxi">Tabaxi</option>
-            <option value="halfOrc">Halborken</option>
-            <option value="elf">Elf</option>
-            <option value="aetherborn">Aethergeborener</option>
-          </select>
-        </label>
+  <div id="step-1" class="step-content active">
 
-        <label>Untergruppe
-          <input type="text" id="char-subrace" placeholder="z. B. Bergzwerg, Blutlinie der Flamme">
-        </label>
+    <div class="panel">
+      <div class="identity-grid">
 
-        <label>Profession
-          <input type="text" id="char-profession" placeholder="z. B. Klingenpriester, Schattenläufer">
-        </label>
+        <div class="portrait-box">
+          <div class="portrait-frame">
+            <img id="preview" src="" style="display:none;">
+            <div id="placeholder" style="color:#333">Portrait</div>
+          </div>
+          <input type="file" id="upload" style="font-size: 10px; margin-top: 5px; width: 100%;">
+        </div>
 
-        <label>Spezial
-          <input type="text" id="char-special" placeholder="z. B. Drachenmacht, Seelenband">
-        </label>
+        <div>
+          <input type="text" id="in-name" placeholder="Name des Helden" style="font-size: 18px; margin-bottom: 10px;">
+          <input type="text" id="in-titel" placeholder="Zusatz / Titel">
+
+          <div style="margin-top: 15px; font-size: 13px; border: 1px solid var(--gold-shadow); padding: 10px; background: rgba(0,0,0,0.2);">
+            <div><b>Rasse:</b> <span id="s-race">-</span></div>
+            <div><b>Untergruppe:</b> <span id="s-sub">-</span></div>
+            <div><b>Profession:</b> <span id="s-prof">-</span></div>
+            <div style="color: var(--gold-bright); margin-top: 8px;">
+              <b>Spezialfähigkeit:</b> <br>
+              <span id="s-spec" style="font-style: italic;">Wähle Volk & Beruf...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="radar-box" style="background:rgba(0,0,0,0.4); border:1px solid var(--gold); padding:5px;">
+          <canvas id="radarCanvas" width="220" height="220"></canvas>
+        </div>
+
       </div>
+    </div>
 
-      <div>
-        <label>Merkmale
-          <input type="text" id="char-traits" placeholder="z. B. Nachtauge, Ritualkundig">
-        </label>
+    <div class="panel">
+      <div class="panel-header">
+        <div>Basisattribute</div>
+        <small>Maximalstufe je Basisattribut beträgt 10.</small>
+      </div>
+      <div id="attr-grid-s1" class="attr-grid"></div>
+      <div style="padding: 15px; text-align: center; background: rgba(0,0,0,0.2);">
+        <button class="btn-main" id="roll-btn">Punkte auswürfeln</button>
+        <span style="margin-left: 20px;">Punkte: <b id="p-left">0</b></span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="origin-grid">
+        <div class="origin-col" id="race-list"><h4>Rassen</h4></div>
+        <div class="origin-col" id="sub-list"><h4>Untergruppen</h4></div>
+        <div class="origin-col" id="prof-list"><h4>Professionen</h4></div>
+      </div>
+    </div>
+
+    <div class="footer-bar" style="padding:15px; display:flex; justify-content:space-between;">
+      <button class="btn-main" onclick="saveCharacterLocal()">Lokal Speichern</button>
+      <button class="btn-main btn-next" onclick="toStep2()">Weiter zu Seite 2</button>
+    </div>
+
+  </div>
+
+  <!-- ================= STEP 2 ================= -->
+
+  <div id="step-2" class="step-content">
+
+    <div class="panel">
+      <div class="panel-header">Körperliche Merkmale & Identität</div>
+      <div id="id-grid-s2" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 15px; font-size: 12px;"></div>
+    </div>
+
+    <div class="panel">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--gold);">
+        <div class="origin-col" style="height: 300px;">
+          <h4 style="position: sticky; top: 0; background: #0a050a; z-index: 5;">Vorteile (+1 SP)</h4>
+          <div id="adv-list"></div>
+        </div>
+        <div class="origin-col" style="height: 300px;">
+          <h4 style="position: sticky; top: 0; background: #0a050a; z-index: 5;">Nachteile (+1 SP)</h4>
+          <div id="dis-list"></div>
+        </div>
+      </div>
+      <div class="rule-hint-red">
+        Bedingung: Mindestens 2 Vorteile und 3 Nachteile Pflicht. Nachteile müssen Vorteile immer um +1 übersteigen!
+      </div>
+    </div>
+
+    <div class="summary-panel-final">
+      <div class="ornamental-frame">
+        <h3 style="font-family:var(--font-header); color:var(--gold); text-transform:uppercase; letter-spacing:4px; margin-bottom:15px; border-bottom:1px solid #444;">Helden-Chronik</h3>
+        <div style="display: grid; grid-template-columns: 1fr 240px; gap: 20px;">
+          <div id="chronik-text-block" style="font-size: 13px; line-height: 1.5;"></div>
+          <div style="text-align:center;">
+            <canvas id="chronikRadar" width="220" height="220" style="transform: scale(0.8);"></canvas>
+            <div id="chronik-traits-cloud" style="margin-top: 5px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bar" style="padding:15px; display:flex; justify-content:space-between; margin-top:20px;">
+      <button class="btn-main" onclick="toStep1()">Zurück</button>
+      <button class="btn-main btn-next" id="btn-finish-check" onclick="toStep3()" disabled>Erstellung Abschließen</button>
+    </div>
+
+  </div>
+
+  <!-- ================= STEP 3 ================= -->
+
+  <div id="step-3" class="step-content">
+
+    <div class="status-top-grid">
+      <div class="status-cell" id="stat-merkmale-final"></div>
+      <div class="status-cell" style="display:flex; justify-content:center;">
+        <div class="portrait-frame"><img id="final-portrait"></div>
+      </div>
+      <div class="status-cell" style="background:rgba(0,0,0,0.6)">
+        <canvas id="finalRadar" width="220" height="220"></canvas>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
+      <div class="panel">
+        <div class="panel-header">Basis (50 SP)</div>
+        <div id="skills-base" class="origin-col" style="height:220px;"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header">Rasse (300 SP)</div>
+        <div id="skills-race" class="origin-col" style="height:220px;"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header">Profession (500 SP)</div>
+        <div id="skills-prof" class="origin-col" style="height:220px;"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">Aktive Attribute (1 Pkt / Tag)</div>
+      <div id="active-attr-grid" class="attr-grid"></div>
+    </div>
+
+    <div class="panel" style="display:grid; grid-template-columns: repeat(5, 1fr); padding: 15px; text-align:center; background:var(--header-gradient); border:1px solid var(--gold);">
+      <div id="calc-le"><b>LEBEN</b><br><span>0</span></div>
+      <div id="calc-en"><b>AUSDAUER</b><br><span>0</span></div>
+      <div id="calc-rs"><b>RÜSTUNG</b><br><span>0</span></div>
+      <div id="calc-gg"><b>GEIST</b><br><span>0</span></div>
+      <div id="calc-tc"><b>TREFFER%</b><br><span>0</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">Inventar & Handel</div>
+      <div class="inventar-grid" id="inv-grid"></div>
+    </div>
+
+    <div class="footer-bar" style="padding:15px; display:flex; justify-content:space-between; background: rgba(0,0,0,0.8);">
+      <div style="font-size: 14px; color:var(--gold-bright);">
+        Währung: <span id="currency-display" style="color:var(--gold);">0 G 0 S 0 K</span>
+      </div>
+      <div style="font-size: 14px; color:var(--gold-bright);">
+        SP: <span id="sp-display" style="color:var(--gold);">5000</span>
+      </div>
+      <button class="btn-main btn-next" id="btn-dayend">Tag beenden</button>
+    </div>
+
+  </div>
+
+  <!-- ============ MODAL: VERKAUF / HANDEL ============ -->
+
+  <div id="sell-modal" class="modal-overlay">
+    <div class="modal-box">
+      <h3 style="margin-top:0; font-family:var(--font-header); color:var(--gold-bright);">Verkauf / Handel</h3>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:15px;">
+        Trage den Erlös dieses Verkaufs ein:
+      </p>
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-bottom:15px;">
+        <div>
+          <span style="font-size:12px;">Gold</span>
+          <input type="number" id="v-gold" min="0" value="0">
+        </div>
+        <div>
+          <span style="font-size:12px;">Silber</span>
+          <input type="number" id="v-silber" min="0" value="0">
+        </div>
+        <div>
+          <span style="font-size:12px;">Kupfer</span>
+          <input type="number" id="v-kupfer" min="0" value="0">
+        </div>
+      </div>
+      <div style="display:flex; justify-content:center; gap:10px; margin-top:10px;">
+        <button class="btn-main" onclick="document.getElementById('sell-modal').style.display='none'">Abbrechen</button>
+        <button class="btn-main btn-next" onclick="confirmSell()">Bestätigen</button>
       </div>
     </div>
   </div>
 
-  <div class="section">
-    <h3>BASISATTRIBUTE</h3>
-    <div class="small">Max. 20 pro Attribut – Konto steuert die Gesamtpunkte.</div>
+  <!-- ============ MODAL: TAG BEENDET / DANKESBILDSCHIRM ============ -->
 
-    <div class="attr-grid" style="margin-top:6px;">
-      <label>Mut</label><input id="attr-courage" type="number" value="10" min="1" max="20">
-      <label>Fingerfertigkeit</label><input id="attr-dexterity" type="number" value="10" min="1" max="20">
-      <label>Körperkraft</label><input id="attr-strength" type="number" value="10" min="1" max="20">
-      <label>Konstitution</label><input id="attr-toughness" type="number" value="10" min="1" max="20">
-      <label>Sozialstatus</label><input id="attr-status" type="number" value="10" min="1" max="20">
-      <label>Intuition</label><input id="attr-intuition" type="number" value="10" min="1" max="20">
-      <label>Verteidigung</label><input id="attr-defense" type="number" value="10" min="1" max="20">
-      <label>Fernkampf</label><input id="attr-ranged" type="number" value="10" min="1" max="20">
-      <label>Technik</label><input id="attr-tech" type="number" value="10" min="1" max="20">
-      <label>Intelligenz</label><input id="attr-intellect" type="number" value="10" min="1" max="20">
-      <label>Gewandtheit</label><input id="attr-agility" type="number" value="10" min="1" max="20">
-      <label>Körperbewusstsein</label><input id="attr-bodyAwareness" type="number" value="10" min="1" max="20">
-      <label>Charisma</label><input id="attr-charisma" type="number" value="10" min="1" max="20">
-      <label>Geistiger Zustand</label><input id="attr-mind" type="number" value="10" min="1" max="20">
-      <label>Angriff</label><input id="attr-attack" type="number" value="10" min="1" max="20">
-      <label>Abwehrschlag</label><input id="attr-counter" type="number" value="10" min="1" max="20">
-      <label>Trefferchance</label><input id="attr-hit" type="number" value="10" min="1" max="20">
-    </div>
-
-    <hr>
-
-    <div class="two-col">
-      <div>
-        <div class="small">Konto (Gesamt), Verbraucht, Übrig</div>
-        <div class="small">Konto: <span id="points-total">0</span></div>
-        <div class="small">Verbraucht: <span id="points-spent">0</span></div>
-        <div class="small">Übrig: <span id="points-left">0</span></div>
-      </div>
-      <div style="text-align:right;">
-        <button onclick="rollAttributePoints()">PUNKTE AUSWÜRFELN</button>
-        <button onclick="resetAttributes()">RESET</button>
-      </div>
+  <div id="thanks-modal" class="modal-overlay">
+    <div class="modal-box">
+      <h3 style="margin-top:0; font-family:var(--font-header); color:var(--gold-bright);">Tag abgeschlossen</h3>
+      <p id="thanks-text" style="font-size:13px; color:var(--muted); margin-bottom:15px;">
+        Tag 1 abgeschlossen. Du erhältst 1000 SP und 1 Attributpunkt.
+      </p>
+      <button class="btn-main btn-next" onclick="closeThanks()">Weiter</button>
     </div>
   </div>
 
-  <div class="section">
-    <h3>Hintergrund</h3>
-    <div class="small">Kurze Beschreibung deiner Herkunft, Blutlinie oder Besonderheit.</div>
-    <textarea id="char-backstory" placeholder="Herkunft, Bruchpunkte, Gelübde…"></textarea>
-
-    <div style="margin-top:6px;text-align:right;">
-      <button class="btn-accent" onclick="goToPage2()">Weiter zu Merkmalen</button>
-    </div>
-  </div>
-</div>
-<!-- BLOCK 1A END -->
-<!-- BLOCK 1B START -->
-<div id="page2" class="panel panel-right hidden">
-
-  <!-- ERSCHEINUNG & IDENTITÄT -->
-  <div class="section">
-    <h3>MERKMALE & IDENTITÄT</h3>
-
-    <div class="two-col">
-      <div>
-        <label>Alter
-          <input type="number" id="char-age" value="25" min="1" max="200">
-        </label>
-
-        <label>Größe (cm)
-          <input type="number" id="char-height" value="175" min="50" max="300">
-        </label>
-
-        <label>Gewicht (kg)
-          <input type="number" id="char-weight" value="75" min="20" max="500">
-        </label>
-
-        <label>Aussehen
-          <input type="text" id="char-appearance" placeholder="z. B. Narben, Haltung, Gesichtszüge">
-        </label>
-
-        <label>Haare
-          <input type="text" id="char-hair" placeholder="z. B. Schwarz, lang, geflochten">
-        </label>
-
-        <label>Haut / Fell
-          <input type="text" id="char-skin" placeholder="z. B. Blass, bronzen, schuppig">
-        </label>
-
-        <label>Augen
-          <input type="text" id="char-eyes" placeholder="z. B. Grün, bernstein, leuchtend">
-        </label>
-
-        <label>Hand
-          <select id="char-hand">
-            <option value="rechts">Rechts</option>
-            <option value="links">Links</option>
-            <option value="beidhändig">Beidhändig</option>
-          </select>
-        </label>
-      </div>
-
-      <div>
-        <label>Stimme
-          <input type="text" id="char-voice" placeholder="z. B. rau, melodisch, tief">
-        </label>
-
-        <label>Besonderheit
-          <input type="text" id="char-specialFeature" placeholder="z. B. Tätowierung, Brandmal, Aura">
-        </label>
-
-        <label>Kleidung
-          <input type="text" id="char-clothes" placeholder="z. B. Reisekleidung, Roben, Rüstung">
-        </label>
-
-        <label>Akzent
-          <input type="text" id="char-accent" placeholder="z. B. Nordisch, südlich, fremdländisch">
-        </label>
-      </div>
-    </div>
-  </div>
-
-  <!-- VORTEILE & NACHTEILE -->
-  <div class="section two-col">
-    <div>
-      <h3>Vorteile (+1 SP)</h3>
-      <div class="multi-list" id="advantages-list">
-        <!-- Wird per JS gefüllt -->
-      </div>
-    </div>
-
-    <div>
-      <h3>Nachteile (+1 SP)</h3>
-      <div class="multi-list" id="disadvantages-list">
-        <!-- Wird per JS gefüllt -->
-      </div>
-    </div>
-  </div>
-
-  <!-- REGELHINWEIS -->
-  <div class="section">
-    <div class="small">
-      <strong>Bedingung:</strong> Mindestens 2 Vorteile.  
-      Nachteile müssen immer die Anzahl der Vorteile um <strong>+1</strong> übersteigen.
-    </div>
-    <div id="trait-warning" class="small" style="color:#ff6b6b;margin-top:6px;"></div>
-  </div>
-
-  <!-- HELDEN-CHRONIK -->
-  <div class="section">
-    <h3>HELDEN-CHRONIK</h3>
-    <div id="hero-chronicle">
-      <!-- Wird dynamisch gefüllt -->
-    </div>
-  </div>
-
-  <!-- BUTTON ZU SEITE 3 -->
-  <div class="section" style="text-align:right;">
-    <button class="btn-accent" onclick="goToPage3()">Weiter zu Seite 3 (Engine)</button>
-  </div>
-
-</div>
-<!-- BLOCK 1B END -->
-<!-- BLOCK 1C START -->
+</div> <!-- /app-shell -->
 <script>
 /* ============================================================
-   NAVIGATION
+   UNDRA ENGINE v1.0 — BLOCK 2/10
+   CORE-DATEN + INITIALISIERUNG + BASIS-FUNKTIONEN
    ============================================================ */
-function showPage(n) {
-  document.getElementById("page1").classList.add("hidden");
-  document.getElementById("page2").classList.add("hidden");
-  document.getElementById("page3").classList.add("hidden");
-  document.getElementById("page" + n).classList.remove("hidden");
-}
 
-function goToPage2() {
-  updatePointSummary();
-  renderAdvantageLists();
-  updateTraitWarning();
-  renderChronicle();
-  showPage(2);
-}
+/* -----------------------------
+   ATTRIBUTE & SHORTCODES
+----------------------------- */
 
-function goToPage3() {
-  if (!validateTraits()) return;
-  collectFinalCharacterData();
-  showPage(3);
-}
-
-/* ============================================================
-   ATTRIBUTE – Punktesystem
-   ============================================================ */
-function getAllAttributeIds() {
-  return [
-    "courage","dexterity","strength","toughness","status","intuition",
-    "defense","ranged","tech","intellect","agility","bodyAwareness",
-    "charisma","mind","attack","counter","hit"
-  ];
-}
-
-function readAttributesFromInputs() {
-  const ids = getAllAttributeIds();
-  const result = {};
-  ids.forEach(id => {
-    const el = document.getElementById("attr-" + id);
-    result[id] = el ? parseInt(el.value) || 0 : 0;
-  });
-  return result;
-}
-
-function updatePointSummary() {
-  const attrs = readAttributesFromInputs();
-  const base = 10;
-  let spent = 0;
-
-  Object.values(attrs).forEach(v => spent += (v - base));
-
-  const total = 50;
-  const left = total - spent;
-
-  document.getElementById("points-total").textContent = total;
-  document.getElementById("points-spent").textContent = spent;
-  document.getElementById("points-left").textContent = left;
-}
-
-function rollAttributePoints() {
-  const ids = getAllAttributeIds();
-  ids.forEach(id => {
-    const el = document.getElementById("attr-" + id);
-    if (!el) return;
-    el.value = 8 + Math.floor(Math.random() * 6); // 8–13
-  });
-  updatePointSummary();
-}
-
-function resetAttributes() {
-  const ids = getAllAttributeIds();
-  ids.forEach(id => {
-    const el = document.getElementById("attr-" + id);
-    if (!el) return;
-    el.value = 10;
-  });
-  updatePointSummary();
-}
-
-/* ============================================================
-   VORTEILE & NACHTEILE – Listen
-   ============================================================ */
-const ADVANTAGES = [
-  "Wachsam","Wetterfest","Tierfreund","Gutes Gehör","Sprachtalent",
-  "Richtungssinn","Reiche Eltern","Schlangenmensch","Hitzeresistenz",
-  "Scharfer Blick","Schnelle Reflexe","Zäher Körper","Magisches Talent",
-  "Gute Intuition","Kampfgeist","Gute Kondition","Guter Ruf","Flink",
-  "Starker Wille","Gute Menschenkenntnis","Gute Balance","Guter Geruchssinn",
-  "Schnelles Lernen","Gute Konzentration","Hohe Belastbarkeit",
-  "Gute Orientierung","Gute Reaktion","Gute Wahrnehmung","Gute Stimme",
-  "Gute Ausstrahlung","Gute Geschicklichkeit","Gute Technik","Gute Planung",
-  "Gute Taktik","Gute Analyse","Gute Kreativität","Gute Anpassung",
-  "Gute Selbstbeherrschung","Gute Disziplin","Gute Ausdauer",
-  "Gute Beweglichkeit","Gute Stabilität","Gute Präzision","Gute Kontrolle",
-  "Gute Verteidigung","Gute Angriffskraft","Gute Trefferchance",
-  "Gute Resistenz","Gute Robustheit"
+const attributes = [
+  "Mut", "Intelligenz", "Fingerfertigkeit", "Gewandtheit", "Körperkraft",
+  "Körperbewusstsein", "Konstitution", "Charisma", "Sozialstatus",
+  "Geistiger Zustand", "Intuition", "Angriff", "Verteidigung",
+  "Abwehrschlag", "Fernkampf", "Trefferchance", "Technik"
 ];
 
-const DISADVANTAGES = [
-  "Farbenblind","Tiefschläfer","Platzangst","Aberglaube","Wasserscheu",
-  "Höhenangst","Goldgier","Prinzipientreue","Tollpatsch","Schwache Kondition",
-  "Schwache Reflexe","Schwache Wahrnehmung","Schwache Stimme","Schwache Technik",
-  "Schwache Planung","Schwache Taktik","Schwache Analyse","Schwache Kreativität",
-  "Schwache Anpassung","Schwache Selbstbeherrschung","Schwache Disziplin",
-  "Schwache Ausdauer","Schwache Beweglichkeit","Schwache Stabilität",
-  "Schwache Präzision","Schwache Kontrolle","Schwache Verteidigung",
-  "Schwache Angriffskraft","Schwache Trefferchance","Schwache Resistenz",
-  "Schwache Robustheit","Schwache Intuition","Schwache Konzentration",
-  "Schwache Orientierung","Schwache Reaktion","Schwache Menschenkenntnis",
-  "Schwache Balance","Schwacher Geruchssinn","Schwaches Lernen",
-  "Schwache Belastbarkeit","Schwache Ausstrahlung","Schwache Geschicklichkeit",
-  "Schwache Technikkenntnis","Schwache Planung","Schwache Analyse",
-  "Schwache Kreativität","Schwache Anpassung","Schwache Disziplin"
+const attrShort = [
+  "MU","IN","FF","GE","KK","KB","KO","CH","SS","GZ","IT","AN","VE","AS","FK","TC","TE"
 ];
 
-function renderAdvantageLists() {
-  const advBox = document.getElementById("advantages-list");
-  const disBox = document.getElementById("disadvantages-list");
+/* -----------------------------
+   RASSEN / SUBRASSEN / PROFESSIONEN
+----------------------------- */
 
-  advBox.innerHTML = "";
-  disBox.innerHTML = "";
+const originData = {
+  "Mensch": {
+    subs: ["Mittelländer", "Tulamiden", "Thorwaler"],
+    profs: ["Ritter", "Dieb", "Händler", "Feuermagier", "Druide"]
+  },
+  "Elf": {
+    subs: ["Hochelf", "Waldelf", "Dunkelelf"],
+    profs: ["Wildnisläufer", "Necromant", "Druide", "Sänger"]
+  },
+  "Zwerg": {
+    subs: ["Ambosszwerg", "Erzzwerg"],
+    profs: ["Waffenschmied", "Bergmann"]
+  },
+  "Ork": {
+    subs: ["Schwarzpelz", "Zholochai"],
+    profs: ["Krieger", "Schamane"]
+  }
+};
 
-  ADVANTAGES.forEach((name, i) => {
-    advBox.innerHTML += `<label><input type="checkbox" class="adv" value="${name}"> ${name}</label>`;
+/* -----------------------------
+   IDENTITÄTSFELDER
+----------------------------- */
+
+const idFields = [
+  {id:"age",l:"Alter"}, {id:"size",l:"Größe"}, {id:"weight",l:"Gewicht"},
+  {id:"eyes",l:"Augen"}, {id:"hair",l:"Haare"}, {id:"skin",l:"Haut/Fell"},
+  {id:"hand",l:"Hand"}, {id:"voice",l:"Stimme"}, {id:"clothes",l:"Kleidung"},
+  {id:"spec",l:"Besonderes"}, {id:"origin",l:"Heimat"}, {id:"scent",l:"Geruch"}
+];
+
+/* -----------------------------
+   VORTEILE / NACHTEILE
+----------------------------- */
+
+const advPool = [
+  "Wachsam","Wetterfest","Tierfreund","Gutes Gehör","Sprachtalent","Richtungssinn",
+  "Eisernes Gedächtnis","Zäher Hund","Glückspilz","Scharfe Sicht","Balance-Gefühl",
+  "Hohe Schmerzgrenze","Giftresistenz","Eiserner Wille","Diplomat","Handwerksgeschick",
+  "Orientierung","Tarnung","Lügendetektor","Guter Tänzer","Adeliges Blut","Amphibisch",
+  "Astrale Regeneration","Beidhändigkeit","Brunnen der Kraft","Dunkelsicht",
+  "Eisresistenz","Empathie","Entfernungssinn","Fährtensinn","Feenfreund","Flink",
+  "Gefahreninstinkt","Geisteskraft","Hitzeresistenz","Immunität gegen Gift",
+  "Innere Uhr","Intuitive Führung","Kälteresistenz","Kampfreflexe","Magiegespür",
+  "Meisterdieb","Pflanzenflüsterer","Prophetische Träume","Schnelle Heilung",
+  "Schlangenmensch","Tiersprache","Unauffällig","Waffenmeister","Zwergennase"
+];
+
+const disPool = [
+  "Farbenblind","Tiefschläfer","Platzangst","Aberglaube","Wasserscheu","Höhenangst",
+  "Goldgier","Tollpatsch","Nachtblind","Kurzsichtig","Schwerhörig","Lahmheit",
+  "Einäugig","Alpträume","Pechvogel","Jähzorn","Neugierig","Verschwendungssüchtig",
+  "Feigheit","Arroganz","Blutrausch","Einbildung","Eitelkeit","Geiz","Hässlichkeit",
+  "Hitzeempfindlichkeit","Kälteempfindlichkeit","Krankheitsanfällig","Lichtempfindlich",
+  "Meeresangst","Messie","Misstrauen","Nahrungsrestriktion","Pechmagnet","Raumangst",
+  "Schlaflosigkeit","Schulden","Sensibler Magen","Spinnenangst","Spielsucht",
+  "Sprachfehler","Streitsucht","Totenangst","Unbeholfenheit","Vergesslichkeit",
+  "Verpflichtungen","Vorurteile","Wutanfälle","Zittrige Hände"
+];
+
+/* -----------------------------
+   CHARAKTERDATENSTRUKTUR
+----------------------------- */
+
+let char = {
+  name: "",
+  titel: "",
+  attrs: {},
+  pool: 0,
+  used: 0,
+
+  race: "",
+  sub: "",
+  prof: "",
+  special: "",
+
+  identity: {},
+  adv: [],
+  dis: [],
+
+  sp: 5000,
+  day: 1,
+  gold: 0,
+  silber: 0,
+  kupfer: 0,
+
+  skills: { base: {}, race: {}, prof: {} },
+
+  dailyPoints: 0,
+  dayEnded: false
+};
+
+/* ============================================================
+   INITIALISIERUNG
+============================================================ */
+
+function init() {
+
+  /* --- Attribute initialisieren --- */
+  const grid1 = document.getElementById('attr-grid-s1');
+
+  attributes.forEach(a => {
+    char.attrs[a] = 0;
+
+    grid1.innerHTML += `
+      <div class="attr-row" id="row-${a}">
+        <span style="font-size:12px;">${a}</span>
+        <button class="btn-step" onclick="modAttr('${a}',-1)">▼</button>
+        <div class="val-box" id="v-${a}">0</div>
+        <button class="btn-step btn-plus" id="plus-${a}" onclick="modAttr('${a}',1)">▲</button>
+      </div>`;
   });
 
-  DISADVANTAGES.forEach((name, i) => {
-    disBox.innerHTML += `<label><input type="checkbox" class="dis" value="${name}"> ${name}</label>`;
+  /* --- Rassenliste füllen --- */
+  const rList = document.getElementById('race-list');
+  Object.keys(originData).forEach(r => {
+    rList.innerHTML += `<div class="check-item" onclick="selectRace('${r}')">${r}</div>`;
   });
 
-  advBox.addEventListener("change", updateTraitWarning);
-  disBox.addEventListener("change", updateTraitWarning);
+  /* --- Identitätsfelder füllen --- */
+  const idGrid = document.getElementById('id-grid-s2');
+  idFields.forEach(f => {
+    idGrid.innerHTML += `
+      <div>
+        <span style="color:var(--muted)">${f.l}</span>
+        <input type="text" oninput="char.identity['${f.id}']=this.value">
+      </div>`;
+  });
+
+  /* --- Vorteile/Nachteile rendern --- */
+  renderTraits();
+
+  /* --- Inventar wird später in Block 4 initialisiert --- */
+
+  updateUI();
 }
 
 /* ============================================================
-   REGELPRÜFUNG
+   ATTRIBUTE MODIFIZIEREN
+============================================================ */
+
+function modAttr(a, v) {
+
+  if (v > 0) {
+    if (char.pool - char.used <= 0) return;
+    if (char.attrs[a] >= 10) return;
+  }
+
+  if (v < 0 && char.attrs[a] <= 0) return;
+
+  char.attrs[a] += v;
+  char.used += v;
+
+  updateUI();
+}
+
+/* ============================================================
+   RASSE / SUB / PROFESSION
+============================================================ */
+
+function selectRace(r) {
+  char.race = r;
+
+  const sList = document.getElementById('sub-list');
+  sList.innerHTML = "<h4>Untergruppen</h4>";
+
+  originData[r].subs.forEach(s => {
+    sList.innerHTML += `<div class="check-item" onclick="selectSub('${s}')">${s}</div>`;
+  });
+
+  updateUI();
+}
+
+function selectSub(s) {
+  char.sub = s;
+
+  const pList = document.getElementById('prof-list');
+  pList.innerHTML = "<h4>Professionen</h4>";
+
+  originData[char.race].profs.forEach(p => {
+    pList.innerHTML += `<div class="check-item" onclick="selectProf('${p}')">${p}</div>`;
+  });
+
+  updateUI();
+}
+
+function selectProf(p) {
+  char.prof = p;
+
+  /* Spezialfähigkeit — später erweiterbar */
+  char.special = [
+    "Göttlicher Funke",
+    "Schattenlauf",
+    "Manaschild",
+    "Eisenzorn"
+  ][Math.floor(Math.random()*4)];
+
+  updateUI();
+}
+
+/* ============================================================
+   UI UPDATE
+============================================================ */
+
+function updateUI() {
+
+  document.getElementById('p-left').textContent = char.pool - char.used;
+
+  document.getElementById('s-race').textContent = char.race || "-";
+  document.getElementById('s-sub').textContent = char.sub || "-";
+  document.getElementById('s-prof').textContent = char.prof || "-";
+  document.getElementById('s-spec').textContent = char.special || "-";
+
+  attributes.forEach(a => {
+    const val = char.attrs[a];
+    document.getElementById(`v-${a}`).textContent = val;
+
+    const btn = document.getElementById(`plus-${a}`);
+    btn.style.opacity = (char.pool - char.used <= 0 || val >= 10) ? "0.2" : "1";
+  });
+
+  drawRadar("radarCanvas");
+}
+
+/* ============================================================
+   RADAR-DIAGRAMM
+============================================================ */
+
+function drawRadar(id) {
+
+  const canvas = document.getElementById(id);
+  const ctx = canvas.getContext("2d");
+
+  const cx = 110, cy = 110, r = 70;
+  ctx.clearRect(0,0,220,220);
+
+  const step = (Math.PI*2)/attributes.length;
+
+  /* Linien */
+  ctx.strokeStyle = "rgba(212,175,55,0.25)";
+
+  attributes.forEach((a, i) => {
+    const angle = step*i - Math.PI/2;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(cx + Math.cos(angle)*r, cy + Math.sin(angle)*r);
+    ctx.stroke();
+
+    ctx.fillStyle = "#d4af37";
+    ctx.font = "8px serif";
+    ctx.fillText(attrShort[i], cx + Math.cos(angle)*(r+12) - 5, cy + Math.sin(angle)*(r+12) + 3);
+  });
+
+  /* Wertefläche */
+  ctx.beginPath();
+  ctx.strokeStyle = "#f8e7b0";
+  ctx.lineWidth = 2;
+  ctx.fillStyle = "rgba(212,175,55,0.35)";
+
+  attributes.forEach((a, i) => {
+    const val = (char.attrs[a] / 10) * r;
+    const angle = step*i - Math.PI/2;
+    const x = cx + Math.cos(angle)*val;
+    const y = cy + Math.sin(angle)*val;
+
+    if (i === 0) ctx.moveTo(x,y);
+    else ctx.lineTo(x,y);
+  });
+
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+}
+
+/* ============================================================
+   VORTEILE / NACHTEILE
+============================================================ */
+
+function renderTraits() {
+
+  const advList = document.getElementById('adv-list');
+  const disList = document.getElementById('dis-list');
+
+  advList.innerHTML = "";
+  disList.innerHTML = "";
+
+  advPool.forEach(name => {
+    advList.innerHTML += `
+      <label class="check-item">
+        <input type="checkbox" onchange="updateChronik()" data-type="adv" value="${name}">
+        ${name}
+      </label>`;
+  });
+
+  disPool.forEach(name => {
+    disList.innerHTML += `
+      <label class="check-item">
+        <input type="checkbox" onchange="updateChronik()" data-type="dis" value="${name}">
+        ${name}
+      </label>`;
+  });
+}
+
+/* ============================================================
+   CHRONIK UPDATE (STEP 2)
+============================================================ */
+
+function updateChronik() {
+
+  char.adv = Array.from(document.querySelectorAll('#adv-list input:checked')).map(i => i.value);
+  char.dis = Array.from(document.querySelectorAll('#dis-list input:checked')).map(i => i.value);
+
+  const btn = document.getElementById('btn-finish-check');
+  const isValid = (
+    char.adv.length >= 2 &&
+    char.dis.length >= 3 &&
+    char.dis.length === char.adv.length + 1
+  );
+
+  btn.disabled = !isValid;
+  btn.style.opacity = btn.disabled ? "0.3" : "1";
+
+  document.getElementById('chronik-text-block').innerHTML = `
+    <p><b>${char.name}</b>, ${char.titel}<br>
+    Volk: ${char.race} (${char.sub})<br>
+    Beruf: ${char.prof}</p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; border-top:1px solid #444; padding-top:10px;">
+      ${idFields.map(f => `
+        <div><span style="color:var(--muted)">${f.l}:</span> ${char.identity[f.id] || "-"}</div>
+      `).join('')}
+    </div>
+  `;
+
+  document.getElementById('chronik-traits-cloud').innerHTML =
+    [...char.adv, ...char.dis].map(t => `<span class="trait-tag">${t}</span>`).join('');
+
+  drawRadar("chronikRadar");
+}
+
+/* ============================================================
+   START
+============================================================ */
+
+init();
+/* ============================================================
+   UNDRA ENGINE v1.0 — BLOCK 3/10
+   STEP-NAVIGATION + PORTRAIT + ROLL + SAVE + CHRONIK-FLOW
    ============================================================ */
-function validateTraits() {
-  const adv = [...document.querySelectorAll(".adv:checked")].length;
-  const dis = [...document.querySelectorAll(".dis:checked")].length;
 
-  if (adv < 2) {
-    document.getElementById("trait-warning").textContent =
-      "Du brauchst mindestens 2 Vorteile.";
-    return false;
+/* ============================================================
+   STEP-NAVIGATION
+============================================================ */
+
+function toStep1() {
+  document.getElementById('step-2').classList.remove('active');
+  document.getElementById('step-1').classList.add('active');
+}
+
+function toStep2() {
+
+  /* Name & Titel übernehmen */
+  char.name = document.getElementById('in-name').value.trim();
+  char.titel = document.getElementById('in-titel').value.trim();
+
+  document.getElementById('header-sub-data').textContent =
+    `${char.name} | ${char.titel}`;
+
+  document.getElementById('step-1').classList.remove('active');
+  document.getElementById('step-2').classList.add('active');
+
+  updateChronik();
+}
+
+function toStep3() {
+  document.getElementById('step-2').classList.remove('active');
+  document.getElementById('step-3').classList.add('active');
+
+  document.getElementById('timeline').style.display = "flex";
+
+  initPage3();
+}
+
+/* ============================================================
+   PORTRAIT-UPLOAD
+============================================================ */
+
+document.getElementById('upload').onchange = (e) => {
+
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = (ev) => {
+    const img = document.getElementById('preview');
+    img.src = ev.target.result;
+    img.style.display = "block";
+
+    document.getElementById('placeholder').style.display = "none";
+  };
+
+  reader.readAsDataURL(file);
+};
+
+/* ============================================================
+   ATTRIBUTE AUSWÜRFELN (POOL = 60)
+============================================================ */
+
+document.getElementById('roll-btn').onclick = function () {
+  char.pool = 60;
+  char.used = 0;
+
+  /* Alle Attribute zurücksetzen */
+  attributes.forEach(a => char.attrs[a] = 0);
+
+  this.disabled = true;
+  updateUI();
+};
+
+/* ============================================================
+   SAVE-SYSTEM (LOKAL)
+============================================================ */
+
+function saveCharacterLocal() {
+
+  let saves = JSON.parse(localStorage.getItem('rpg_saves') || '[]');
+
+  if (saves.length >= 6) saves.shift();
+
+  /* Deep Copy, damit spätere Änderungen nicht alte Saves überschreiben */
+  const saveCopy = JSON.parse(JSON.stringify(char));
+
+  saves.push(saveCopy);
+
+  localStorage.setItem('rpg_saves', JSON.stringify(saves));
+
+  alert("Gespeichert!");
+}
+
+/* ============================================================
+   STEP 3 — FINAL PAGE INITIALISIERUNG
+============================================================ */
+
+function initPage3() {
+
+  /* --- Merkmale / Identität --- */
+  const finalInf = document.getElementById('stat-merkmale-final');
+
+  finalInf.innerHTML = `
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
+      ${idFields.map(f =>
+        `<div><b>${f.l}:</b> ${char.identity[f.id] || "-"}</div>`
+      ).join('')}
+    </div>
+
+    <div style="margin-top:10px; border-top:1px solid var(--gold); padding-top:5px;">
+      ${char.race} | ${char.prof} | ${char.special}
+    </div>
+  `;
+
+  /* --- Portrait übernehmen --- */
+  document.getElementById('final-portrait').src =
+    document.getElementById('preview').src || "";
+
+  /* --- Radar aktualisieren --- */
+  drawRadar("finalRadar");
+
+  /* --- Skills werden in Block 4 erzeugt --- */
+
+  /* --- Aktive Attribute (Block 4) --- */
+
+  /* --- Berechnungen (Block 4) --- */
+
+  /* --- Timeline (Block 5) --- */
+}
+
+/* ============================================================
+   CHRONIK (STEP 2)
+============================================================ */
+
+function updateChronik() {
+
+  char.adv = Array.from(document.querySelectorAll('#adv-list input:checked'))
+    .map(i => i.value);
+
+  char.dis = Array.from(document.querySelectorAll('#dis-list input:checked'))
+    .map(i => i.value);
+
+  const btn = document.getElementById('btn-finish-check');
+
+  const isValid =
+    char.adv.length >= 2 &&
+    char.dis.length >= 3 &&
+    char.dis.length === char.adv.length + 1;
+
+  btn.disabled = !isValid;
+  btn.style.opacity = btn.disabled ? "0.3" : "1";
+
+  /* --- Chronik-Text --- */
+  document.getElementById('chronik-text-block').innerHTML = `
+    <p><b>${char.name}</b>, ${char.titel}<br>
+    Volk: ${char.race} (${char.sub})<br>
+    Beruf: ${char.prof}</p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; border-top:1px solid #444; padding-top:10px;">
+      ${idFields.map(f =>
+        `<div><span style="color:var(--muted)">${f.l}:</span> ${char.identity[f.id] || "-"}</div>`
+      ).join('')}
+    </div>
+  `;
+
+  /* --- Trait-Cloud --- */
+  document.getElementById('chronik-traits-cloud').innerHTML =
+    [...char.adv, ...char.dis]
+      .map(t => `<span class="trait-tag">${t}</span>`)
+      .join('');
+
+  /* --- Radar --- */
+  drawRadar("chronikRadar");
+}/* ============================================================
+   UNDRA ENGINE v1.0 — BLOCK 4/10
+   SKILLS + ACTIVE ATTRIBUTES + STATS + INVENTAR + TIMELINE
+   ============================================================ */
+
+/* ============================================================
+   SKILL-BLOCKS (STEP 3)
+============================================================ */
+
+function renderSkillBlock(id, list, type, cost) {
+
+  const cont = document.getElementById(id);
+  cont.innerHTML = "";
+
+  list.forEach((s, i) => {
+
+    if (!char.skills[type][i]) char.skills[type][i] = 0;
+
+    cont.innerHTML += `
+      <div class="skill-item">
+        <span>${s}</span>
+        <div style="display:flex; gap:5px; align-items:center;">
+          <span id="lv-${type}-${i}">${char.skills[type][i]}</span>
+          <button class="btn-upgrade ${char.sp >= cost ? 'glow' : ''}"
+            onclick="buySkill('${type}', ${i}, ${cost})">▲</button>
+        </div>
+      </div>`;
+  });
+}
+
+function buySkill(type, i, cost) {
+
+  if (char.sp >= cost && char.skills[type][i] < 10) {
+
+    char.sp -= cost;
+    char.skills[type][i]++;
+
+    document.getElementById(`lv-${type}-${i}`).textContent =
+      char.skills[type][i];
+
+    document.getElementById('sp-display').textContent = char.sp;
   }
+}
 
-  if (dis !== adv + 1) {
-    document.getElementById("trait-warning").textContent =
-      `Du hast ${adv} Vorteile – du brauchst ${adv + 1} Nachteile.`;
-    return false;
+/* ============================================================
+   ACTIVE ATTRIBUTES (STEP 3)
+============================================================ */
+
+function renderActiveAttributes() {
+
+  const actGrid = document.getElementById('active-attr-grid');
+  actGrid.innerHTML = "";
+
+  attributes.forEach((a, i) => {
+
+    actGrid.innerHTML += `
+      <div class="attr-row">
+        <span>${a}</span>
+        <div class="val-box" id="stat3-v-${i}">${char.attrs[a]}</div>
+        <button class="btn-upgrade ${char.dailyPoints > 0 ? 'glow' : ''}"
+          onclick="upgradeStat3(${i})">▲</button>
+      </div>`;
+  });
+}
+
+function upgradeStat3(i) {
+
+  const attr = attributes[i];
+
+  if (char.dailyPoints > 0 && char.attrs[attr] < 20) {
+
+    char.attrs[attr]++;
+    char.dailyPoints--;
+
+    initPage3(); // Re-render Step 3
   }
+}
 
-  document.getElementById("trait-warning").textContent = "";
+/* ============================================================
+   STAT-BERECHNUNGEN
+============================================================ */
+
+function updateStatsCalc() {
+
+  document.getElementById('calc-le').querySelector('span').textContent =
+    char.attrs["Konstitution"] * 10 + 30;
+
+  document.getElementById('calc-en').querySelector('span').textContent =
+    char.attrs["Mut"] * 5;
+
+  document.getElementById('calc-gg').querySelector('span').textContent =
+    char.attrs["Geistiger Zustand"] * 5;
+
+  document.getElementById('calc-tc').querySelector('span').textContent =
+    char.attrs["Trefferchance"] * 4 + "%";
+
+  /* Rüstung — Platzhalter */
+  document.getElementById('calc-rs').querySelector('span').textContent = 0;
+}
+
+/* ============================================================
+   INVENTAR (STEP 3)
+============================================================ */
+
+function initInventar() {
+
+  const grid = document.getElementById('inv-grid');
+  grid.innerHTML = "";
+
+  for (let i = 0; i < 30; i++) {
+    grid.innerHTML += `
+      <div class="inv-slot">
+        Slot ${i + 1}
+        <button class="btn-upgrade" onclick="openSell(${i})">$</button>
+      </div>`;
+  }
+}
+
+let currentSlot = 0;
+
+function openSell(i) {
+  currentSlot = i;
+  document.getElementById('sell-modal').style.display = 'flex';
+}
+
+function confirmSell() {
+
+  char.gold += parseInt(document.getElementById('v-gold').value) || 0;
+  char.silber += parseInt(document.getElementById('v-silber').value) || 0;
+  char.kupfer += parseInt(document.getElementById('v-kupfer').value) || 0;
+
+  document.getElementById('currency-display').textContent =
+    `${char.gold} G ${char.silber} S ${char.kupfer} K`;
+
+  document.getElementById('sell-modal').style.display = 'none';
+}
+
+/* ============================================================
+   DAY-END / TIMELINE
+============================================================ */
+
+document.getElementById('btn-dayend').onclick = () => {
+
+  if (char.dayEnded) return;
+
+  char.dayEnded = true;
+  char.dailyPoints = 1;
+  char.sp += 1000;
+
+  document.getElementById('thanks-text').textContent =
+    `Tag ${char.day} abgeschlossen. Du erhältst 1000 SP und 1 Attributpunkt.`;
+
+  document.getElementById('thanks-modal').style.display = 'flex';
+
+  updateTimeline();
+  initPage3();
+};
+
+function updateTimeline() {
+
+  const tl = document.getElementById('timeline');
+  tl.innerHTML = "";
+
+  for (let i = 1; i <= 30; i++) {
+
+    tl.innerHTML += `
+      <div class="day-check">
+        Tag ${i}
+        <input type="checkbox" ${i <= char.day && char.dayEnded ? 'checked' : ''} disabled>
+      </div>`;
+  }
+}
+
+function closeThanks() {
+
+  document.getElementById('thanks-modal').style.display = 'none';
+
+  if (char.day < 30) {
+    char.day++;
+    char.dayEnded = false;
+  }
+}
+
+/* ============================================================
+   STEP 3 — FINAL PAGE RENDER
+============================================================ */
+
+function initPage3() {
+
+  /* --- Identität --- */
+  const finalInf = document.getElementById('stat-merkmale-final');
+
+  finalInf.innerHTML = `
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
+      ${idFields.map(f =>
+        `<div><b>${f.l}:</b> ${char.identity[f.id] || "-"}</div>`
+      ).join('')}
+    </div>
+
+    <div style="margin-top:10px; border-top:1px solid var(--gold); padding-top:5px;">
+      ${char.race} | ${char.prof} | ${char.special}
+    </div>
+  `;
+
+  /* --- Portrait --- */
+  document.getElementById('final-portrait').src =
+    document.getElementById('preview').src || "";
+
+  /* --- Radar --- */
+  drawRadar("finalRadar");
+
+  /* --- Skills --- */
+  renderSkillBlock(
+    'skills-base',
+    ["Klettern","Schwimmen","Schleichen","Orientierung","Sinnenschärfe",
+     "Heilkunde","Reiten","Singen","Springen","Zechen"],
+    'base',
+    50
+  );
+
+  renderSkillBlock(
+    'skills-race',
+    [char.race + "-Kunde", "Nachtsicht", "Waldlauf", "Steingespür"],
+    'race',
+    300
+  );
+
+  renderSkillBlock(
+    'skills-prof',
+    [char.prof + "-Wissen", "Waffenfokus", "Magiesinn"],
+    'prof',
+    500
+  );
+
+  /* --- Aktive Attribute --- */
+  renderActiveAttributes();
+
+  /* --- Stat-Berechnungen --- */
+  updateStatsCalc();
+
+  /* --- Timeline --- */
+  updateTimeline();
+}/* ============================================================
+   UNDRA ENGINE v1.0 — BLOCK 5/10
+   STABILITÄT + UI-POLISHING + RADAR-OPTIMIERUNG
+   ============================================================ */
+
+/* ============================================================
+   1. SICHERE GET-ELEMENT-FUNKTION
+   Verhindert JS-Abbrüche, wenn ein Element fehlt.
+============================================================ */
+
+function $(id) {
+  return document.getElementById(id);
+}
+
+/* ============================================================
+   2. SICHERE UI-AKTUALISIERUNG
+   Verhindert Fehler, wenn Elemente noch nicht existieren.
+============================================================ */
+
+function safeSet(id, value) {
+  const el = $(id);
+  if (el) el.textContent = value;
+}
+
+function safeHTML(id, html) {
+  const el = $(id);
+  if (el) el.innerHTML = html;
+}
+
+/* ============================================================
+   3. RADAR-OPTIMIERUNG
+   - Kein Flackern
+   - Bessere Linien
+   - Saubere Schrift
+============================================================ */
+
+function drawRadar(id) {
+
+  const canvas = $(id);
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+  const cx = 110, cy = 110, r = 70;
+
+  ctx.clearRect(0,0,220,220);
+
+  const step = (Math.PI*2)/attributes.length;
+
+  ctx.save();
+  ctx.lineWidth = 1.2;
+  ctx.strokeStyle = "rgba(212,175,55,0.25)";
+  ctx.fillStyle = "#d4af37";
+  ctx.font = "9px Georgia";
+
+  /* Linien + Labels */
+  attributes.forEach((a, i) => {
+    const angle = step*i - Math.PI/2;
+
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(cx + Math.cos(angle)*r, cy + Math.sin(angle)*r);
+    ctx.stroke();
+
+    ctx.fillText(
+      attrShort[i],
+      cx + Math.cos(angle)*(r+12) - 6,
+      cy + Math.sin(angle)*(r+12) + 3
+    );
+  });
+
+  /* Wertefläche */
+  ctx.beginPath();
+  ctx.strokeStyle = "#f8e7b0";
+  ctx.lineWidth = 2;
+  ctx.fillStyle = "rgba(212,175,55,0.35)";
+
+  attributes.forEach((a, i) => {
+    const val = (char.attrs[a] / 10) * r;
+    const angle = step*i - Math.PI/2;
+    const x = cx + Math.cos(angle)*val;
+    const y = cy + Math.sin(angle)*val;
+
+    if (i === 0) ctx.moveTo(x,y);
+    else ctx.lineTo(x,y);
+  });
+
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+}
+
+/* ============================================================
+   4. BUTTON-GLOW-LOGIK VERBESSERT
+   - Glow nur, wenn SP oder DailyPoints verfügbar
+============================================================ */
+
+function updateGlowStates() {
+
+  /* Skill-Buttons */
+  document.querySelectorAll('.btn-upgrade').forEach(btn => {
+    const cost = parseInt(btn.getAttribute('data-cost') || "0");
+    if (cost && char.sp >= cost) btn.classList.add('glow');
+    else btn.classList.remove('glow');
+  });
+
+  /* Daily Attribute */
+  document.querySelectorAll('#active-attr-grid .btn-upgrade').forEach(btn => {
+    if (char.dailyPoints > 0) btn.classList.add('glow');
+    else btn.classList.remove('glow');
+  });
+}
+
+/* ============================================================
+   5. PERFORMANCE-FIXES
+   - Radar wird nur neu gezeichnet, wenn nötig
+   - Step-Wechsel reduziert Reflows
+============================================================ */
+
+let lastRadarHash = "";
+
+function radarNeedsUpdate() {
+  const hash = JSON.stringify(char.attrs);
+  if (hash === lastRadarHash) return false;
+  lastRadarHash = hash;
   return true;
 }
 
-function updateTraitWarning() {
-  validateTraits();
-  renderChronicle();
-}
+function updateUI() {
 
-/* ============================================================
-   HELDEN-CHRONIK
-   ============================================================ */
-function renderChronicle() {
-  const name = document.getElementById("char-name").value || "Namenloser";
-  const age = document.getElementById("char-age").value;
-  const height = document.getElementById("char-height").value;
-  const weight = document.getElementById("char-weight").value;
-  const hand = document.getElementById("char-hand").value;
+  safeSet('p-left', char.pool - char.used);
 
-  const hair = document.getElementById("char-hair").value || "-";
-  const eyes = document.getElementById("char-eyes").value || "-";
-  const skin = document.getElementById("char-skin").value || "-";
+  safeSet('s-race', char.race || "-");
+  safeSet('s-sub', char.sub || "-");
+  safeSet('s-prof', char.prof || "-");
+  safeSet('s-spec', char.special || "-");
 
-  const race = document.getElementById("char-race").value || "-";
-  const profession = document.getElementById("char-profession").value || "-";
+  attributes.forEach(a => {
+    safeSet(`v-${a}`, char.attrs[a]);
 
-  const attrs = readAttributesFromInputs();
-
-  const chronicle = `
-    <strong>Name:</strong> ${name}<br><br>
-
-    <strong>HERKUNFT</strong><br>
-    Rasse: ${race}<br>
-    Beruf: ${profession}<br>
-    Alter: ${age}<br>
-    Größe: ${height} cm<br>
-    Gewicht: ${weight} kg<br>
-    Hand: ${hand}<br><br>
-
-    <strong>ERSCHEINUNG</strong><br>
-    Augen: ${eyes}<br>
-    Haare: ${hair}<br>
-    Haut: ${skin}<br><br>
-
-    <strong>BASISATTRIBUTE</strong><br>
-    MU: ${attrs.courage} | IN: ${attrs.intuition} | FF: ${attrs.dexterity} | GE: ${attrs.agility}<br>
-    KK: ${attrs.strength} | KB: ${attrs.bodyAwareness} | KO: ${attrs.toughness}<br>
-    CH: ${attrs.charisma} | SS: ${attrs.status} | GZ: ${attrs.mind}<br>
-    IT: ${attrs.intellect} | AN: ${attrs.attack} | VE: ${attrs.defense}<br>
-    AS: ${attrs.counter} | FK: ${attrs.ranged} | TC: ${attrs.hit} | TE: ${attrs.tech}<br><br>
-
-    <strong>MERKMALE</strong><br>
-    Vorteile: ${[...document.querySelectorAll(".adv:checked")].map(e => e.value).join(", ") || "-"}<br>
-    Nachteile: ${[...document.querySelectorAll(".dis:checked")].map(e => e.value).join(", ") || "-"}
-  `;
-
-  document.getElementById("hero-chronicle").innerHTML = chronicle;
-}
-
-/* ============================================================
-   PORTRAIT-VORSCHAU
-   ============================================================ */
-document.addEventListener("change", function(e) {
-  if (e.target && e.target.id === "char-portrait") {
-    const box = document.getElementById("char-portrait-preview");
-    const file = e.target.files[0];
-    if (!file) {
-      box.textContent = "Kein Portrait geladen.";
-      return;
+    const btn = $(`plus-${a}`);
+    if (btn) {
+      btn.style.opacity =
+        (char.pool - char.used <= 0 || char.attrs[a] >= 10)
+        ? "0.2"
+        : "1";
     }
-    box.textContent = "Datei gewählt: " + file.name;
+  });
+
+  if (radarNeedsUpdate()) {
+    drawRadar("radarCanvas");
+    drawRadar("chronikRadar");
+    drawRadar("finalRadar");
+  }
+
+  updateGlowStates();
+}
+
+/* ============================================================
+   6. FEHLERABFANG FÜR MODALS
+============================================================ */
+
+function closeModalSafe(id) {
+  const el = $(id);
+  if (el) el.style.display = "none";
+}
+
+function openModalSafe(id) {
+  const el = $(id);
+  if (el) el.style.display = "flex";
+}
+
+/* ============================================================
+   7. SICHERHEIT FÜR SELL-MODAL
+============================================================ */
+
+function confirmSell() {
+
+  const g = parseInt($('v-gold')?.value || 0);
+  const s = parseInt($('v-silber')?.value || 0);
+  const k = parseInt($('v-kupfer')?.value || 0);
+
+  char.gold += g;
+  char.silber += s;
+  char.kupfer += k;
+
+  safeSet('currency-display', `${char.gold} G ${char.silber} S ${char.kupfer} K`);
+
+  closeModalSafe('sell-modal');
+}
+
+/* ============================================================
+   8. TIMELINE-FIX
+   - Kein Flackern
+   - Stabiler Fortschritt
+============================================================ */
+
+function updateTimeline() {
+
+  const tl = $('timeline');
+  if (!tl) return;
+
+  let html = "";
+
+  for (let i = 1; i <= 30; i++) {
+    const checked = (i < char.day) || (i === char.day && char.dayEnded);
+    html += `
+      <div class="day-check">
+        Tag ${i}
+        <input type="checkbox" ${checked ? "checked" : ""} disabled>
+      </div>`;
+  }
+
+  tl.innerHTML = html;
+}
+
+/* ============================================================
+   9. DAY-END FIX
+============================================================ */
+
+$('btn-dayend').onclick = () => {
+
+  if (char.dayEnded) return;
+
+  char.dayEnded = true;
+  char.dailyPoints = 1;
+  char.sp += 1000;
+
+  safeSet('sp-display', char.sp);
+
+  safeSet('thanks-text',
+    `Tag ${char.day} abgeschlossen. Du erhältst 1000 SP und 1 Attributpunkt.`);
+
+  openModalSafe('thanks-modal');
+
+  updateTimeline();
+  initPage3();
+};
+
+/* ============================================================
+   10. THANKS-MODAL FIX
+============================================================ */
+
+function closeThanks() {
+
+  closeModalSafe('thanks-modal');
+
+  if (char.day < 30) {
+    char.day++;
+    char.dayEnded = false;
+  }
+
+  updateTimeline();
+}/* ============================================================
+   UNDRA ENGINE v1.0 — BLOCK 6/10
+   RASSEN-BONI + PROFESSION-BONI + SPEZIALFÄHIGKEITEN
+   ============================================================ */
+
+/* ============================================================
+   1. RASSEN-BONI
+   Jede Rasse kann:
+   - Startattribute geben
+   - Passive Effekte geben
+   - Skill-Boni geben
+============================================================ */
+
+const raceBonuses = {
+
+  "Mensch": {
+    attrs: { "Mut": 1, "Intelligenz": 1 },
+    skills: { "Diplomat": 1 },
+    passive: ["Anpassungsfähig", "Vielseitig"]
+  },
+
+  "Elf": {
+    attrs: { "Gewandtheit": 2, "Intuition": 1 },
+    skills: { "Waldlauf": 1, "Nachtsicht": 1 },
+    passive: ["Magische Affinität", "Scharfe Sinne"]
+  },
+
+  "Zwerg": {
+    attrs: { "Konstitution": 2, "Körperkraft": 1 },
+    skills: { "Steingespür": 1 },
+    passive: ["Zähigkeit", "Bergvolk"]
+  },
+
+  "Ork": {
+    attrs: { "Körperkraft": 2, "Mut": 1 },
+    skills: { "Kriegswut": 1 },
+    passive: ["Wildheit", "Stammeskraft"]
+  }
+};
+
+/* ============================================================
+   2. PROFESSION-BONI
+============================================================ */
+
+const professionBonuses = {
+
+  "Ritter": {
+    attrs: { "Angriff": 1, "Verteidigung": 1 },
+    skills: { "Waffenfokus": 1 },
+    passive: ["Ehrenkodex"]
+  },
+
+  "Dieb": {
+    attrs: { "Fingerfertigkeit": 2 },
+    skills: { "Schleichen": 1 },
+    passive: ["Schattenhand"]
+  },
+
+  "Händler": {
+    attrs: { "Charisma": 2 },
+    skills: { "Feilschen": 1 },
+    passive: ["Goldnase"]
+  },
+
+  "Feuermagier": {
+    attrs: { "Intelligenz": 2 },
+    skills: { "Magiesinn": 1 },
+    passive: ["Flammenherz"]
+  },
+
+  "Druide": {
+    attrs: { "Intuition": 2 },
+    skills: { "Naturkunde": 1 },
+    passive: ["Tiervertrautheit"]
+  },
+
+  "Wildnisläufer": {
+    attrs: { "Gewandtheit": 1, "Intuition": 1 },
+    skills: { "Fährtensinn": 1 },
+    passive: ["Pfadfinder"]
+  },
+
+  "Necromant": {
+    attrs: { "Geistiger Zustand": 2 },
+    skills: { "Dunkelmagie": 1 },
+    passive: ["Seelenblick"]
+  },
+
+  "Sänger": {
+    attrs: { "Charisma": 2 },
+    skills: { "Singen": 1 },
+    passive: ["Melodienmagie"]
+  },
+
+  "Waffenschmied": {
+    attrs: { "Technik": 2 },
+    skills: { "Schmieden": 1 },
+    passive: ["Handwerkskunst"]
+  },
+
+  "Bergmann": {
+    attrs: { "Körperkraft": 1, "Konstitution": 1 },
+    skills: { "Bergbau": 1 },
+    passive: ["Grubenerfahrung"]
+  },
+
+  "Krieger": {
+    attrs: { "Angriff": 2 },
+    skills: { "Kampfreflexe": 1 },
+    passive: ["Blutrausch"]
+  },
+
+  "Schamane": {
+    attrs: { "Intuition": 2 },
+    skills: { "Ritualkunde": 1 },
+    passive: ["Geisterbindung"]
+  }
+};
+
+/* ============================================================
+   3. SPEZIALFÄHIGKEITEN
+============================================================ */
+
+const specialAbilities = {
+
+  "Ritter": ["Ehrenhieb", "Schildwall", "Tapferkeit"],
+  "Dieb": ["Schattenlauf", "Fingerfertigkeit+", "Lautlos"],
+  "Händler": ["Feilscherkönig", "Goldinstinkt", "Überredung"],
+  "Feuermagier": ["Feuerlanze", "Manaschild", "Flammenkreis"],
+  "Druide": ["Tierform", "Wurzelgriff", "Natursegen"],
+  "Wildnisläufer": ["Spurenlesen+", "Waldgeist", "Schnellschuss"],
+  "Necromant": ["Knochenspeer", "Seelenraub", "Dunkelbindung"],
+  "Sänger": ["Stimme der Macht", "Bardenmut", "Melodienzauber"],
+  "Waffenschmied": ["Klingenfokus", "Stahlseele", "Hammerschlag"],
+  "Bergmann": ["Erzspür", "Tunnelblick", "Felsgriff"],
+  "Krieger": ["Wutstoß", "Kampfrausch", "Schlachtruf"],
+  "Schamane": ["Geisterruf", "Totemtanz", "Ahnenmacht"]
+};
+
+/* ============================================================
+   4. BONI ANWENDEN
+============================================================ */
+
+function applyRaceBonuses() {
+
+  const bonus = raceBonuses[char.race];
+  if (!bonus) return;
+
+  /* Attribute */
+  Object.keys(bonus.attrs).forEach(a => {
+    char.attrs[a] += bonus.attrs[a];
+  });
+
+  /* Passive Effekte */
+  char.passiveRace = bonus.passive || [];
+
+  /* Skills */
+  char.skillBonusRace = bonus.skills || {};
+}
+
+function applyProfessionBonuses() {
+
+  const bonus = professionBonuses[char.prof];
+  if (!bonus) return;
+
+  /* Attribute */
+  Object.keys(bonus.attrs).forEach(a => {
+    char.attrs[a] += bonus.attrs[a];
+  });
+
+  /* Passive Effekte */
+  char.passiveProf = bonus.passive || [];
+
+  /* Skills */
+  char.skillBonusProf = bonus.skills || {};
+}
+
+/* ============================================================
+   5. SPEZIALFÄHIGKEIT ZUWEISEN
+============================================================ */
+
+function assignSpecialAbility() {
+
+  const list = specialAbilities[char.prof];
+
+  if (!list) {
+    char.special = "Standard";
+    return;
+  }
+
+  char.special = list[Math.floor(Math.random() * list.length)];
+}
+
+/* ============================================================
+   6. HOOKS IN SELECT-FUNKTIONEN
+============================================================ */
+
+const oldSelectRace = selectRace;
+selectRace = function (r) {
+  oldSelectRace(r);
+  applyRaceBonuses();
+  updateUI();
+};
+
+const oldSelectProf = selectProf;
+selectProf = function (p) {
+  oldSelectProf(p);
+  applyProfessionBonuses();
+  assignSpecialAbility();
+  updateUI();
+};
+
+/* ============================================================
+   7. FINAL-SHEET ERWEITERUNG
+============================================================ */
+
+function renderFinalBonuses() {
+
+  const cell = $("stat-merkmale-final");
+
+  const racePassives = char.passiveRace?.join(", ") || "-";
+  const profPassives = char.passiveProf?.join(", ") || "-";
+
+  cell.innerHTML += `
+    <div style="margin-top:10px; border-top:1px solid #333; padding-top:10px;">
+      <b>Rassen-Boni:</b> ${racePassives}<br>
+      <b>Profession-Boni:</b> ${profPassives}
+    </div>
+  `;
+}
+
+const oldInitPage3 = initPage3;
+initPage3 = function () {
+  oldInitPage3();
+  renderFinalBonuses();
+};/* ============================================================
+   UNDRA ENGINE v1.0 — BLOCK 7/10
+   TOOLTIP-SYSTEM + HOVER-INFOS + DYNAMISCHE POPUPS
+   ============================================================ */
+
+/* ============================================================
+   1. TOOLTIP ELEMENT ERZEUGEN
+============================================================ */
+
+let tooltipEl = null;
+
+function createTooltip() {
+  tooltipEl = document.createElement("div");
+  tooltipEl.id = "undra-tooltip";
+  tooltipEl.style.position = "fixed";
+  tooltipEl.style.zIndex = "9999";
+  tooltipEl.style.pointerEvents = "none";
+  tooltipEl.style.padding = "8px 12px";
+  tooltipEl.style.background = "rgba(0,0,0,0.85)";
+  tooltipEl.style.border = "1px solid var(--gold)";
+  tooltipEl.style.borderRadius = "6px";
+  tooltipEl.style.color = "var(--gold-bright)";
+  tooltipEl.style.fontSize = "12px";
+  tooltipEl.style.fontFamily = "Georgia";
+  tooltipEl.style.maxWidth = "260px";
+  tooltipEl.style.display = "none";
+  tooltipEl.style.boxShadow = "0 0 10px rgba(212,175,55,0.4)";
+  document.body.appendChild(tooltipEl);
+}
+
+createTooltip();
+
+/* ============================================================
+   2. TOOLTIP ANZEIGEN
+============================================================ */
+
+function showTooltip(text, x, y) {
+  if (!tooltipEl) return;
+
+  tooltipEl.innerHTML = text;
+  tooltipEl.style.left = x + 15 + "px";
+  tooltipEl.style.top = y + 15 + "px";
+  tooltipEl.style.display = "block";
+}
+
+/* ============================================================
+   3. TOOLTIP VERSTECKEN
+============================================================ */
+
+function hideTooltip() {
+  if (tooltipEl) tooltipEl.style.display = "none";
+}
+
+/* ============================================================
+   4. TOOLTIP-REGISTRIERUNG
+============================================================ */
+
+function registerTooltip(el, text) {
+  el.addEventListener("mousemove", (e) => showTooltip(text, e.clientX, e.clientY));
+  el.addEventListener("mouseleave", hideTooltip);
+}
+
+/* ============================================================
+   5. TOOLTIP-DATENBANK
+   (Kann später erweitert werden)
+============================================================ */
+
+const tooltipData = {
+
+  /* Attribute */
+  "Mut": "Mut beeinflusst Ausdauer, Kampfgeist und Willenskraft.",
+  "Intelligenz": "Intelligenz verbessert Magie, Analyse und Problemlösung.",
+  "Fingerfertigkeit": "Fingerfertigkeit erhöht Geschick, Schlösserknacken und Diebeskunst.",
+  "Gewandtheit": "Gewandtheit verbessert Ausweichen, Bewegung und Reflexe.",
+  "Körperkraft": "Körperkraft erhöht Schaden, Traglast und Nahkampfstärke.",
+  "Körperbewusstsein": "Verbessert Balance, Körperkontrolle und Akrobatik.",
+  "Konstitution": "Erhöht Lebenspunkte und Widerstandskraft.",
+  "Charisma": "Verbessert soziale Interaktionen und Handelsgeschick.",
+  "Sozialstatus": "Beeinflusst Ansehen, Privilegien und gesellschaftliche Macht.",
+  "Geistiger Zustand": "Beeinflusst mentale Stabilität und magische Resistenz.",
+  "Intuition": "Verbessert Wahrnehmung, Instinkt und Reaktionsfähigkeit.",
+  "Angriff": "Erhöht Trefferchance und Schaden im Nahkampf.",
+  "Verteidigung": "Verbessert Blocken, Parieren und Schadensreduktion.",
+  "Abwehrschlag": "Chance auf sofortigen Gegenangriff.",
+  "Fernkampf": "Verbessert Trefferchance und Schaden mit Fernwaffen.",
+  "Trefferchance": "Grundwert für alle Angriffe.",
+  "Technik": "Verbessert Handwerk, Mechanik und Schmiedekunst.",
+
+  /* Traits */
+  "Wachsam": "Du bemerkst Gefahren früher und erhältst Wahrnehmungsboni.",
+  "Zäher Hund": "Du hältst mehr aus und regenerierst schneller.",
+  "Glückspilz": "Du hast häufiger kritische Erfolge.",
+  "Pechvogel": "Du hast häufiger kritische Fehlschläge.",
+
+  /* Passive Effekte */
+  "Anpassungsfähig": "Menschen passen sich schnell an neue Situationen an.",
+  "Magische Affinität": "Elfen spüren Magie intuitiv.",
+  "Zähigkeit": "Zwerge sind extrem widerstandsfähig.",
+  "Wildheit": "Orks kämpfen mit roher Kraft.",
+
+  /* Skills */
+  "Klettern": "Erlaubt das Überwinden von Hindernissen und Felswänden.",
+  "Schleichen": "Bewegung ohne Geräusche, ideal für Diebe.",
+  "Sinnenschärfe": "Verbessert Wahrnehmung und Entdeckung versteckter Dinge.",
+  "Magiesinn": "Erlaubt das Spüren magischer Energien.",
+  "Waffenfokus": "Erhöht Schaden und Präzision mit bevorzugten Waffen."
+};
+
+/* ============================================================
+   6. TOOLTIP-AUTO-BINDING FÜR ATTRIBUTE
+============================================================ */
+
+function bindAttributeTooltips() {
+
+  attributes.forEach(a => {
+    const row = document.getElementById(`row-${a}`);
+    if (row && tooltipData[a]) {
+      registerTooltip(row, `<b>${a}</b><br>${tooltipData[a]}`);
+    }
+  });
+}
+
+/* ============================================================
+   7. TOOLTIP-AUTO-BINDING FÜR SKILLS
+============================================================ */
+
+function bindSkillTooltips() {
+
+  document.querySelectorAll(".skill-item span:first-child").forEach(el => {
+    const name = el.textContent.trim();
+    if (tooltipData[name]) {
+      registerTooltip(el, `<b>${name}</b><br>${tooltipData[name]}`);
+    }
+  });
+}
+
+/* ============================================================
+   8. TOOLTIP-AUTO-BINDING FÜR TRAITS
+============================================================ */
+
+function bindTraitTooltips() {
+
+  document.querySelectorAll("#adv-list label, #dis-list label").forEach(el => {
+    const name = el.textContent.trim();
+    if (tooltipData[name]) {
+      registerTooltip(el, `<b>${name}</b><br>${tooltipData[name]}`);
+    }
+  });
+}
+
+/* ============================================================
+   9. TOOLTIP-AUTO-BINDING FÜR PASSIVE BONI
+============================================================ */
+
+function bindPassiveTooltips() {
+
+  const racePassives = char.passiveRace || [];
+  const profPassives = char.passiveProf || [];
+
+  [...racePassives, ...profPassives].forEach(p => {
+    const el = document.querySelector(`.trait-tag:contains('${p}')`);
+    if (el && tooltipData[p]) {
+      registerTooltip(el, `<b>${p}</b><br>${tooltipData[p]}`);
+    }
+  });
+}
+
+/* ============================================================
+   10. HOOK IN INITPAGE3
+============================================================ */
+
+const oldInitPage3_Tooltip = initPage3;
+initPage3 = function () {
+  oldInitPage3_Tooltip();
+
+  bindSkillTooltips();
+  bindAttributeTooltips();
+  bindTraitTooltips();
+  bindPassiveTooltips();
+};/* ============================================================
+   UNDRA ENGINE v1.0 — BLOCK 8/10
+   SOUND-SYSTEM (UI-SOUNDS, HOVER, AMBIENT)
+   ============================================================ */
+
+/* ============================================================
+   1. SOUND-MANAGER
+============================================================ */
+
+const Sound = {
+  enabled: true,
+  volume: 0.4,
+
+  sounds: {},
+
+  load(name, src) {
+    const audio = new Audio(src);
+    audio.volume = this.volume;
+    this.sounds[name] = audio;
+  },
+
+  play(name) {
+    if (!this.enabled) return;
+    const s = this.sounds[name];
+    if (!s) return;
+    s.currentTime = 0;
+    s.play().catch(() => {});
+  },
+
+  setVolume(v) {
+    this.volume = v;
+    Object.values(this.sounds).forEach(a => a.volume = v);
+  }
+};
+
+/* ============================================================
+   2. SOUND-DATEIEN LADEN
+   (Du kannst die Dateien später ersetzen)
+============================================================ */
+
+Sound.load("hover",      "https://cdn.jsdelivr.net/gh/naptha/tiny-sfx/click1.mp3");
+Sound.load("click",      "https://cdn.jsdelivr.net/gh/naptha/tiny-sfx/click2.mp3");
+Sound.load("upgrade",    "https://cdn.jsdelivr.net/gh/naptha/tiny-sfx/powerup.mp3");
+Sound.load("buy",        "https://cdn.jsdelivr.net/gh/naptha/tiny-sfx/coin.mp3");
+Sound.load("dayend",     "https://cdn.jsdelivr.net/gh/naptha/tiny-sfx/magic.mp3");
+Sound.load("ambient",    "https://cdn.jsdelivr.net/gh/naptha/tiny-sfx/wind.mp3");
+
+/* ============================================================
+   3. AMBIENT-LOOP
+============================================================ */
+
+function startAmbient() {
+  const amb = Sound.sounds["ambient"];
+  if (!amb) return;
+
+  amb.loop = true;
+  amb.volume = 0.15;
+  amb.play().catch(() => {});
+}
+
+/* ============================================================
+   4. UI-SOUNDS AUTOMATISCH BINDEN
+============================================================ */
+
+function bindUISounds() {
+
+  /* Buttons */
+  document.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("mouseenter", () => Sound.play("hover"));
+    btn.addEventListener("click", () => Sound.play("click"));
+  });
+
+  /* Skill-Upgrades */
+  document.querySelectorAll(".btn-upgrade").forEach(btn => {
+    btn.addEventListener("click", () => Sound.play("upgrade"));
+  });
+
+  /* Attribute-Upgrades */
+  document.querySelectorAll(".btn-step, .btn-plus").forEach(btn => {
+    btn.addEventListener("click", () => Sound.play("upgrade"));
+  });
+}
+
+/* ============================================================
+   5. HOOK IN INITPAGE3 (SKILL-KAUF-SOUND)
+============================================================ */
+
+const oldBuySkill = buySkill;
+buySkill = function (type, i, cost) {
+  const before = char.sp;
+  oldBuySkill(type, i, cost);
+  if (char.sp < before) Sound.play("buy");
+};
+
+/* ============================================================
+   6. HOOK IN DAY-END
+============================================================ */
+
+const oldDayEnd = $('btn-dayend').onclick;
+$('btn-dayend').onclick = () => {
+  Sound.play("dayend");
+  oldDayEnd();
+};
+
+/* ============================================================
+   7. HOOK IN INITPAGE3 (NEU BINDEN)
+============================================================ */
+
+const oldInitPage3_Sound = initPage3;
+initPage3 = function () {
+  oldInitPage3_Sound();
+  bindUISounds();
+};
+
+/* ============================================================
+   8. SOUND BEIM START AKTIVIEREN
+============================================================ */
+
+window.addEventListener("click", () => {
+  startAmbient();
+}, { once: true });
+/* ============================================================
+   UNDRA ENGINE v1.0 — BLOCK 9/10
+   DEBUG-OVERLAY + DEV-KONSOLE + EXPORT + ERROR-CATCHER
+   ============================================================ */
+
+/* ============================================================
+   1. DEBUG-OVERLAY ERZEUGEN
+============================================================ */
+
+let debugVisible = false;
+
+const debugOverlay = document.createElement("div");
+debugOverlay.id = "debug-overlay";
+debugOverlay.style.position = "fixed";
+debugOverlay.style.bottom = "0";
+debugOverlay.style.right = "0";
+debugOverlay.style.width = "420px";
+debugOverlay.style.height = "260px";
+debugOverlay.style.background = "rgba(0,0,0,0.85)";
+debugOverlay.style.border = "2px solid var(--gold)";
+debugOverlay.style.borderRadius = "8px 0 0 0";
+debugOverlay.style.color = "var(--gold-bright)";
+debugOverlay.style.fontFamily = "Consolas, monospace";
+debugOverlay.style.fontSize = "12px";
+debugOverlay.style.padding = "10px";
+debugOverlay.style.display = "none";
+debugOverlay.style.zIndex = "99999";
+debugOverlay.style.overflowY = "auto";
+debugOverlay.style.boxShadow = "0 0 20px rgba(212,175,55,0.4)";
+document.body.appendChild(debugOverlay);
+
+/* ============================================================
+   2. DEBUG-TOGGLE (STRG + D)
+============================================================ */
+
+window.addEventListener("keydown", (e) => {
+  if (e.ctrlKey && e.key.toLowerCase() === "d") {
+    debugVisible = !debugVisible;
+    debugOverlay.style.display = debugVisible ? "block" : "none";
   }
 });
 
 /* ============================================================
-   ÜBERGABE AN DIE ENGINE (SEITE 3)
-   ============================================================ */
-function collectFinalCharacterData() {
-  const attrs = readAttributesFromInputs();
+   3. DEBUG-LOG-FUNKTION
+============================================================ */
 
-  const adv = [...document.querySelectorAll(".adv:checked")].map(e => e.value);
-  const dis = [...document.querySelectorAll(".dis:checked")].map(e => e.value);
-
-  const portraitInput = document.getElementById("char-portrait");
-  const portraitName = portraitInput.files[0] ? portraitInput.files[0].name : null;
-
-  window.UNDRA_CHARACTER = {
-    name: document.getElementById("char-name").value,
-    title: document.getElementById("char-title").value,
-    race: document.getElementById("char-race").value,
-    subrace: document.getElementById("char-subrace").value,
-    profession: document.getElementById("char-profession").value,
-    special: document.getElementById("char-special").value,
-    traits: document.getElementById("char-traits").value,
-    backstory: document.getElementById("char-backstory").value,
-    attrs,
-    advantages: adv,
-    disadvantages: dis,
-    appearance: {
-      age: document.getElementById("char-age").value,
-      height: document.getElementById("char-height").value,
-      weight: document.getElementById("char-weight").value,
-      hair: document.getElementById("char-hair").value,
-      eyes: document.getElementById("char-eyes").value,
-      skin: document.getElementById("char-skin").value,
-      voice: document.getElementById("char-voice").value,
-      clothes: document.getElementById("char-clothes").value,
-      accent: document.getElementById("char-accent").value,
-      specialFeature: document.getElementById("char-specialFeature").value,
-      hand: document.getElementById("char-hand").value
-    },
-    portraitName
-  };
+function debugLog(msg) {
+  const time = new Date().toLocaleTimeString();
+  debugOverlay.innerHTML += `<div>[${time}] ${msg}</div>`;
+  debugOverlay.scrollTop = debugOverlay.scrollHeight;
 }
-</script>
-<!-- BLOCK 1C END -->
-<!-- BLOCK 2 START -->
-<script>
+
 /* ============================================================
-   UNDRA ENGINE v1.0 – CORE NAMESPACE
+   4. ERROR-CATCHER
+============================================================ */
+
+window.onerror = function (msg, src, line, col, err) {
+  debugLog(`❌ ERROR: ${msg} @ ${line}:${col}`);
+};
+
+/* ============================================================
+   5. DEV-KONSOLE (STRG + K)
+============================================================ */
+
+let devConsoleVisible = false;
+
+const devConsole = document.createElement("div");
+devConsole.id = "dev-console";
+devConsole.style.position = "fixed";
+devConsole.style.bottom = "260px";
+devConsole.style.right = "0";
+devConsole.style.width = "420px";
+devConsole.style.height = "200px";
+devConsole.style.background = "rgba(0,0,0,0.9)";
+devConsole.style.border = "2px solid var(--gold)";
+devConsole.style.borderRadius = "8px 0 0 0";
+devConsole.style.color = "var(--gold-bright)";
+devConsole.style.fontFamily = "Consolas, monospace";
+devConsole.style.fontSize = "12px";
+devConsole.style.padding = "10px";
+devConsole.style.display = "none";
+devConsole.style.zIndex = "99999";
+devConsole.style.boxShadow = "0 0 20px rgba(212,175,55,0.4)";
+document.body.appendChild(devConsole);
+
+devConsole.innerHTML = `
+  <b>UNDRA DEV-KONSOLE</b><br>
+  <small>STRG + K zum Öffnen/Schließen</small><br><br>
+
+  <button onclick="devSetSP()">SP setzen</button>
+  <button onclick="devSetAttr()">Attribut setzen</button>
+  <button onclick="devReapplyRace()">Race-Boni</button>
+  <button onclick="devReapplyProf()">Prof-Boni</button>
+  <button onclick="devNewSpecial()">Neue Spezialfähigkeit</button>
+  <button onclick="devSetDay()">Tag setzen</button>
+  <button onclick="devReset()">Hard Reset</button>
+  <button onclick="devExport()">Export</button>
+
+  <div id="dev-output" style="margin-top:10px; max-height:80px; overflow:auto;"></div>
+`;
+
+window.addEventListener("keydown", (e) => {
+  if (e.ctrlKey && e.key.toLowerCase() === "k") {
+    devConsoleVisible = !devConsoleVisible;
+    devConsole.style.display = devConsoleVisible ? "block" : "none";
+  }
+});
+
+/* ============================================================
+   6. DEV-FUNKTIONEN
+============================================================ */
+
+function devOut(msg) {
+  document.getElementById("dev-output").innerHTML += msg + "<br>";
+}
+
+/* SP setzen */
+function devSetSP() {
+  const v = prompt("Neue SP:");
+  if (!v) return;
+  char.sp = parseInt(v);
+  safeSet("sp-display", char.sp);
+  devOut("SP gesetzt.");
+}
+
+/* Attribut setzen */
+function devSetAttr() {
+  const a = prompt("Attributname:");
+  if (!attributes.includes(a)) return devOut("Ungültiges Attribut.");
+  const v = prompt("Neuer Wert:");
+  char.attrs[a] = parseInt(v);
+  updateUI();
+  devOut(`${a} gesetzt.`);
+}
+
+/* Race-Boni neu anwenden */
+function devReapplyRace() {
+  applyRaceBonuses();
+  updateUI();
+  devOut("Race-Boni angewendet.");
+}
+
+/* Profession-Boni neu anwenden */
+function devReapplyProf() {
+  applyProfessionBonuses();
+  updateUI();
+  devOut("Profession-Boni angewendet.");
+}
+
+/* Neue Spezialfähigkeit */
+function devNewSpecial() {
+  assignSpecialAbility();
+  updateUI();
+  devOut("Neue Spezialfähigkeit zugewiesen.");
+}
+
+/* Tag setzen */
+function devSetDay() {
+  const v = prompt("Tag (1–30):");
+  char.day = parseInt(v);
+  updateTimeline();
+  devOut("Tag gesetzt.");
+}
+
+/* Hard Reset */
+function devReset() {
+  if (!confirm("Wirklich zurücksetzen?")) return;
+  location.reload();
+}
+
+/* Export */
+function devExport() {
+  const json = JSON.stringify(char, null, 2);
+  devOut("<pre>" + json + "</pre>");
+  debugLog("Export durchgeführt.");
+}/* ============================================================
+   UNDRA ENGINE v1.0 — BLOCK 10/10
+   AUTO-SAVE + IMPORT + MOBILE-OPTIMIERUNG + FINAL-POLISH
    ============================================================ */
-window.UNDRA = {}; // global namespace
 
-UNDRA.log = [];
-function gameLog(msg) {
-  UNDRA.log.push(msg);
-  console.log("[UNDRA]", msg);
+/* ============================================================
+   1. AUTO-SAVE (ALLE 10 SEKUNDEN)
+============================================================ */
 
-  const box = document.getElementById("game-log");
-  if (box) {
-    const div = document.createElement("div");
-    div.textContent = msg;
-    box.appendChild(div);
-    box.scrollTop = box.scrollHeight;
+function autoSave() {
+  try {
+    localStorage.setItem("undra_autosave", JSON.stringify(char));
+    debugLog("Autosave durchgeführt.");
+  } catch (e) {
+    debugLog("Autosave-Fehler: " + e.message);
   }
 }
 
-/* ============================================================
-   UTILITIES
-   ============================================================ */
-function clamp(v, min, max) {
-  return Math.max(min, Math.min(max, v));
-}
-function deepClone(obj) {
-  return JSON.parse(JSON.stringify(obj));
-}
-function rollD20() {
-  return Math.floor(Math.random() * 20) + 1;
-}
-function rollDN(n = 6) {
-  return Math.floor(Math.random() * n) + 1;
-}
-function rollDice(count, sides) {
-  let total = 0;
-  for (let i = 0; i < count; i++) total += rollDN(sides);
-  return total;
-}
+setInterval(autoSave, 10000);
 
 /* ============================================================
-   SKILL REGISTRY
-   ============================================================ */
-UNDRA.SkillRegistry = {
-  athletics:  { id: "athletics",  name: "Athletik",    attribute: "strength",  description: "Klettern, Springen, Tragen, körperliche Leistung." },
-  diplomacy:  { id: "diplomacy",  name: "Diplomatie",  attribute: "charisma",  description: "Verhandeln, Überzeugen, Beruhigen." },
-  intimidation:{ id:"intimidation",name:"Einschüchtern",attribute:"presence", description:"Drohungen, Druck, Furcht erzeugen." },
-  streetwise: { id: "streetwise", name: "Straßenkunde",attribute: "intellect", description: "Lügen, Betrug, Unterweltkontakte." },
-  empathySkill:{id:"empathySkill",name:"Empathie",    attribute:"empathy",    description:"Gefühle lesen, Mitgefühl, Menschenkenntnis." },
-  crafting:   { id:"crafting",    name:"Handwerk",    attribute:"intellect",  description:"Schmieden, reparieren, bauen." },
-  alchemy:    { id:"alchemy",     name:"Alchemie",    attribute:"intellect",  description:"Tränke, Gifte, Essenzen." },
-  stealth:    { id:"stealth",     name:"Schleichen",  attribute:"agility",    description:"Lautlos bewegen, verbergen." },
-  perception: { id:"perception",  name:"Wahrnehmung", attribute:"perception", description:"Sehen, hören, Details bemerken." }
-};
+   2. AUTO-LOAD BEIM START
+============================================================ */
 
-/* ============================================================
-   ITEM REGISTRY
-   ============================================================ */
-UNDRA.ItemRegistry = {
-  sword: {
-    id: "sword", name: "Schwert", type: "weapon",
-    weight: 4, value: 30, rarity: "common", stackable: false,
-    description: "Ein einfaches, aber zuverlässiges Schwert.",
-    damage: { min: 3, max: 8 }
-  },
-  dagger: {
-    id: "dagger", name: "Dolch", type: "weapon",
-    weight: 1, value: 10, rarity: "common", stackable: false,
-    description: "Leichter Dolch, schnell gezogen.",
-    damage: { min: 2, max: 5 }
-  },
-  leatherArmor: {
-    id: "leatherArmor", name: "Lederharnisch", type: "armor",
-    weight: 6, value: 25, rarity: "common", stackable: false,
-    description: "Bietet leichten Schutz ohne große Einschränkung.",
-    armorValue: 1
-  },
-  chainArmor: {
-    id: "chainArmor", name: "Kettenhemd", type: "armor",
-    weight: 10, value: 60, rarity: "uncommon", stackable: false,
-    description: "Solider Schutz gegen Hiebe.",
-    armorValue: 2
-  },
-  healthPotion: {
-    id: "healthPotion", name: "Heiltrank", type: "consumable",
-    weight: 1, value: 15, rarity: "common", stackable: true,
-    maxStack: 10, description: "Stellt eine moderate Menge Lebenspunkte wieder her."
-  },
-  ironOre: {
-    id: "ironOre", name: "Eisenerz", type: "material",
-    weight: 2, value: 5, rarity: "common", stackable: true,
-    maxStack: 50, description: "Rohes Erz, Grundlage für Waffen und Rüstungen."
-  },
-  herb: {
-    id: "herb", name: "Kraut", type: "material",
-    weight: 0.1, value: 2, rarity: "common", stackable: true,
-    maxStack: 50, description: "Grundlage für einfache Tränke."
-  },
-  water: {
-    id: "water", name: "Flasche Wasser", type: "consumable",
-    weight: 1, value: 1, rarity: "common", stackable: true,
-    maxStack: 10, description: "Löscht Durst, Grundlage für Alchemie."
-  },
-  wood: {
-    id: "wood", name: "Holz", type: "material",
-    weight: 2, value: 3, rarity: "common", stackable: true,
-    maxStack: 50, description: "Holz für Griffe, Schäfte, Strukturen."
-  },
-  rope: {
-    id: "rope", name: "Seil", type: "tool",
-    weight: 3, value: 3, rarity: "common", stackable: false,
-    description: "Nützlich zum Klettern, Sichern oder Fesseln."
-  }
-};
-
-/* ============================================================
-   RACE REGISTRY
-   ============================================================ */
-UNDRA.RaceRegistry = {
-  human: {
-    id: "human", name: "Mensch",
-    modifiers: {}, traits: ["Anpassungsfähig","Vielseitig"], subraces: {}
-  },
-  elf: {
-    id: "elf", name: "Elf",
-    modifiers: { agility: 2, intellect: 1, perception: 2, strength: -1 },
-    traits: ["Scharfsinnig","Langlebig"],
-    subraces: {
-      highElf: {
-        id: "highElf", name: "Hochelf",
-        modifiers: { intellect: 2, perception: 1 },
-        traits: ["Arkaner Sinn"]
-      },
-      woodElf: {
-        id: "woodElf", name: "Waldelf",
-        modifiers: { agility: 1, perception: 1 },
-        traits: ["Waldläufer"]
-      }
-    }
-  },
-  dwarf: {
-    id: "dwarf", name: "Zwerg",
-    modifiers: { strength: 1, toughness: 2, agility: -1, willpower: 1 },
-    traits: ["Zäh","Handwerklich"],
-    subraces: {
-      mountain: {
-        id: "mountain", name: "Bergzwerg",
-        modifiers: { strength: 2, toughness: 1 },
-        traits: ["Steinbau"]
-      },
-      hill: {
-        id: "hill", name: "Hügelzwerg",
-        modifiers: { toughness: 2 },
-        traits: ["Widerstand"]
-      }
-    }
-  },
-  orc: {
-    id: "orc", name: "Ork",
-    modifiers: { strength: 2, toughness: 1, intellect: -1, charisma: -1, empathy: -1, presence: 1 },
-    traits: ["Kraftvoll","Furchteinflößend"],
-    subraces: {}
-  },
-  halfling: {
-    id: "halfling", name: "Halbling",
-    modifiers: { agility: 2, perception: 1, charisma: 1, strength: -1 },
-    traits: ["Glückspilz","Behände"],
-    subraces: {}
-  },
-  aetherborn: {
-    id: "aetherborn", name: "Aethergeborener",
-    modifiers: { agility: 1, intellect: 2, perception: 1, willpower: 1 },
-    traits: ["Ätherisch","Magisch begabt"],
-    subraces: {
-      voidTouched: {
-        id: "voidTouched", name: "Leereberührt",
-        modifiers: { willpower: 2 },
-        traits: ["Leerenresonanz"]
-      }
-    }
-  }
-};
-
-/* ============================================================
-   STATUS EFFECTS
-   ============================================================ */
-UNDRA.StatusRegistry = {
-  bleeding: {
-    id: "bleeding", name: "Blutung", type: "debuff",
-    durationType: "rounds",
-    description: "Verliert jede Runde Lebenspunkte.",
-    tick(target) { applyDamage(target, 2, "physisch", "Blutung"); }
-  },
-  poisoned: {
-    id: "poisoned", name: "Vergiftet", type: "debuff",
-    durationType: "rounds",
-    description: "Schwächt den Körper.",
-    tick(target) { applyDamage(target, 1, "gift", "Vergiftung"); }
-  },
-  stunned: {
-    id: "stunned", name: "Benommen", type: "debuff",
-    durationType: "rounds",
-    description: "Kann nicht handeln."
-  },
-  inspired: {
-    id: "inspired", name: "Inspiriert", type: "buff",
-    durationType: "rounds",
-    description: "Erleichtert Proben."
-  }
-};
-
-/* ============================================================
-   PLAYER MODEL
-   ============================================================ */
-UNDRA.player = {
-  name: "Unbenannter Held",
-  title: "",
-  race: "human",
-  subrace: null,
-
-  attributes: {
-    strength: 10,
-    toughness: 10,
-    agility: 10,
-    intellect: 10,
-    perception: 10,
-    willpower: 10,
-    charisma: 10,
-    empathy: 10,
-    presence: 10
-  },
-
-  hp: { max: 50, current: 50 },
-  gs: { max: 40, current: 40 },
-  stamina: { base: 40, max: 40, current: 40 },
-  fatigue: 0,
-
-  skills: {
-    athletics: { level: 1 },
-    diplomacy: { level: 1 },
-    intimidation: { level: 0 },
-    streetwise: { level: 0 },
-    empathySkill: { level: 1 },
-    crafting: { level: 0 },
-    alchemy: { level: 0 },
-    stealth: { level: 0 },
-    perception: { level: 1 }
-  },
-
-  equipment: {
-    weapon: null,
-    armor: null
-  },
-
-  inventory: [],
-  money: { gold: 0, silver: 0, copper: 0 },
-
-  statusEffects: [],
-  reputation: { global: 0, factions: {} },
-
-  position: { region: "forest", location: "forestEdge" },
-  worldState: { weather: "klar", timeOfDay: "morgen" }
-};
-
-/* ============================================================
-   ÜBERGABE DER CHARAKTERDATEN AUS SEITE 1 & 2
-   ============================================================ */
-function UNDRA_applyCharacter() {
-  const data = window.UNDRA_CHARACTER;
+function autoLoad() {
+  const data = localStorage.getItem("undra_autosave");
   if (!data) return;
 
-  const p = UNDRA.player;
-
-  p.name = data.name;
-  p.title = data.title;
-  p.race = data.race;
-  p.subrace = data.subrace;
-
-  // Attribute-Mapping (optional erweiterbar)
-  // Beispiel:
-  // p.attributes.strength = data.attrs.strength;
-  // p.attributes.agility  = data.attrs.agility;
-
-  p.flavour = {
-    advantages: data.advantages,
-    disadvantages: data.disadvantages,
-    backstory: data.backstory,
-    profession: data.profession,
-    special: data.special,
-    traits: data.traits,
-    appearance: data.appearance,
-    portraitName: data.portraitName
-  };
-
-  gameLog("Charakterdaten in Engine übernommen.");
+  try {
+    const loaded = JSON.parse(data);
+    Object.assign(char, loaded);
+    debugLog("Autosave geladen.");
+  } catch (e) {
+    debugLog("Fehler beim Laden des Autosaves.");
+  }
 }
+
+autoLoad();
+
+/* ============================================================
+   3. IMPORT-SYSTEM (JSON → CHAR)
+============================================================ */
+
+function importCharacter() {
+  const json = prompt("Füge hier den JSON-Charakter ein:");
+  if (!json) return;
+
+  try {
+    const obj = JSON.parse(json);
+    Object.assign(char, obj);
+    updateUI();
+    initPage3();
+    debugLog("Import erfolgreich.");
+  } catch (e) {
+    alert("Fehler: Ungültiges JSON.");
+  }
+}
+
+/* DEV-KONSOLE BUTTON */
+const oldDevConsole = document.getElementById("dev-console").innerHTML;
+document.getElementById("dev-console").innerHTML = oldDevConsole.replace(
+  "</button>",
+  "</button><button onclick='importCharacter()'>Import</button>"
+);
+
+/* ============================================================
+   4. MOBILE-OPTIMIERUNG
+============================================================ */
+
+/* Größere Touch-Hitboxen */
+document.addEventListener("touchstart", () => {}, { passive: true });
+
+function enhanceTouchTargets() {
+  document.querySelectorAll("button, .check-item, .btn-upgrade").forEach(el => {
+    el.style.minHeight = "32px";
+    el.style.padding = "6px 10px";
+  });
+}
+
+enhanceTouchTargets();
+
+/* Scroll-Fix für iOS */
+document.body.style.webkitOverflowScrolling = "touch";
+
+/* ============================================================
+   5. PERFORMANCE-BOOST
+============================================================ */
+
+/* Radar nur neu zeichnen, wenn sichtbar */
+function drawRadarIfVisible(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const rect = el.getBoundingClientRect();
+  if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+  drawRadar(id);
+}
+
+/* Debounce für UI-Updates */
+let uiDebounce = false;
+
+function updateUI_Optimized() {
+  if (uiDebounce) return;
+  uiDebounce = true;
+  setTimeout(() => {
+    updateUI();
+    uiDebounce = false;
+  }, 50);
+}
+
+/* Hook ersetzen */
+const oldUpdateUI = updateUI;
+updateUI = updateUI_Optimized;
+
+/* ============================================================
+   6. UI-POLISHING (Transitions, sanfte Effekte)
+============================================================ */
+
+const style = document.createElement("style");
+style.innerHTML = `
+  .panel, .attr-row, .skill-item, .inv-slot {
+    transition: all 0.25s ease;
+  }
+
+  button:hover {
+    filter: brightness(1.2);
+  }
+
+  #undra-tooltip {
+    transition: opacity 0.15s ease;
+  }
+`;
+document.head.appendChild(style);
+
+/* ============================================================
+   7. ENGINE-STABILISIERUNG
+============================================================ */
+
+function safeNumber(v) {
+  return isNaN(v) ? 0 : v;
+}
+
+function safeAttr(a) {
+  return safeNumber(char.attrs[a] || 0);
+}
+
+/* ============================================================
+   8. FINAL-LOG
+============================================================ */
+
+debugLog("UNDRA ENGINE v1.0 vollständig geladen.");
 </script>
-<!-- BLOCK 2 END -->
-<!-- BLOCK 3 START -->
-<script>
-/* ============================================================
-   HP / GS / STAMINA / FATIGUE
-   ============================================================ */
-function applyDamage(target, amount, type = "physisch", reason = "") {
-  target.hp.current = clamp(target.hp.current - amount, 0, target.hp.max);
-  const label = target === UNDRA.player ? "Du erhältst" : `${target.name} erhält`;
-  gameLog(`${label} ${amount} Schaden (${reason || type}).`);
-
-  if (target.hp.current <= 0) {
-    onCharacterDefeated(target);
-  }
-
-  renderPlayer();
-  renderEnemy();
-}
-
-function healHP(target, amount, reason = "") {
-  target.hp.current = clamp(target.hp.current + amount, 0, target.hp.max);
-  gameLog(`${target === UNDRA.player ? "Du" : target.name} heilst ${amount} HP (${reason}).`);
-  renderPlayer();
-  renderEnemy();
-}
-
-function applyGSDamage(target, amount, reason = "") {
-  target.gs.current = clamp(target.gs.current - amount, 0, target.gs.max);
-  gameLog(`GS -${amount} (${reason}).`);
-  renderPlayer();
-}
-
-function spendStamina(amount, reason = "") {
-  const p = UNDRA.player;
-  p.stamina.current = clamp(p.stamina.current - amount, 0, p.stamina.max);
-  gameLog(`Ausdauer -${amount} (${reason}).`);
-
-  if (p.stamina.current <= 0) {
-    increaseFatigue(1, "Erschöpft");
-  }
-
-  renderPlayer();
-}
-
-function restoreStamina(amount, reason = "") {
-  const p = UNDRA.player;
-  p.stamina.current = clamp(p.stamina.current + amount, 0, p.stamina.max);
-  gameLog(`Ausdauer +${amount} (${reason}).`);
-  renderPlayer();
-}
-
-function increaseFatigue(amount = 1, reason = "") {
-  const p = UNDRA.player;
-  const old = p.fatigue;
-  p.fatigue = clamp(p.fatigue + amount, 0, 10);
-  gameLog(`Erschöpfung: ${old} → ${p.fatigue} (${reason}).`);
-}
-
-function reduceFatigue(amount = 1, reason = "") {
-  const p = UNDRA.player;
-  const old = p.fatigue;
-  p.fatigue = clamp(p.fatigue - amount, 0, 10);
-  gameLog(`Erschöpfung: ${old} → ${p.fatigue} (${reason}).`);
-}
-
-function onCharacterDefeated(target) {
-  if (target === UNDRA.player) {
-    gameLog("Du brichst zusammen. Alles wird schwarz…");
-  } else {
-    gameLog(`${target.name} ist besiegt.`);
-  }
-}
-
-/* ============================================================
-   STATUS EFFECTS – ADD / REMOVE / TICK
-   ============================================================ */
-function addStatusEffect(target, statusId, duration) {
-  const def = UNDRA.StatusRegistry[statusId];
-  if (!def) return;
-
-  if (!target.statusEffects) target.statusEffects = [];
-
-  const existing = target.statusEffects.find(s => s.id === statusId);
-  if (existing) {
-    existing.remaining = Math.max(existing.remaining, duration);
-  } else {
-    target.statusEffects.push({ id: statusId, remaining: duration });
-  }
-
-  if (target === UNDRA.player) {
-    gameLog(`Status erhalten: ${def.name} (${duration} Runden).`);
-  }
-}
-
-function removeStatusEffect(target, statusId) {
-  if (!target.statusEffects) return;
-
-  const before = target.statusEffects.length;
-  target.statusEffects = target.statusEffects.filter(s => s.id !== statusId);
-
-  if (before !== target.statusEffects.length && target === UNDRA.player) {
-    const def = UNDRA.StatusRegistry[statusId];
-    gameLog(`Status entfernt: ${def ? def.name : statusId}`);
-  }
-}
-
-function tickStatusEffects(target) {
-  if (!target.statusEffects || !target.statusEffects.length) return;
-
-  target.statusEffects.forEach(se => {
-    const def = UNDRA.StatusRegistry[se.id];
-    if (def && def.tick) def.tick(target);
-    se.remaining--;
-  });
-
-  target.statusEffects = target.statusEffects.filter(se => se.remaining > 0);
-}
-
-/* ============================================================
-   MONEY SYSTEM
-   ============================================================ */
-function normalizeMoney(m) {
-  let total = (m.copper || 0) + (m.silver || 0) * 100 + (m.gold || 0) * 10000;
-
-  const gold = Math.floor(total / 10000);
-  total -= gold * 10000;
-
-  const silver = Math.floor(total / 100);
-  total -= silver * 100;
-
-  const copper = total;
-
-  return { gold, silver, copper };
-}
-
-function addMoney(g = 0, s = 0, c = 0, reason = "") {
-  const p = UNDRA.player;
-
-  p.money.gold += g;
-  p.money.silver += s;
-  p.money.copper += c;
-
-  p.money = normalizeMoney(p.money);
-
-  gameLog(`Geld erhalten: ${g}G ${s}S ${c}K ${reason ? `(${reason})` : ""}`);
-  renderPlayer();
-}
-
-function subtractMoney(g = 0, s = 0, c = 0, reason = "") {
-  const p = UNDRA.player;
-
-  const newMoney = normalizeMoney({
-    gold: p.money.gold - g,
-    silver: p.money.silver - s,
-    copper: p.money.copper - c
-  });
-
-  if (newMoney.gold < 0 || newMoney.silver < 0 || newMoney.copper < 0) {
-    gameLog("Nicht genug Geld.");
-    return false;
-  }
-
-  p.money = newMoney;
-  gameLog(`Geld ausgegeben: ${g}G ${s}S ${c}K ${reason ? `(${reason})` : ""}`);
-  renderPlayer();
-  return true;
-}
-
-/* ============================================================
-   INVENTAR SYSTEM
-   ============================================================ */
-function findInventoryEntry(id) {
-  return UNDRA.player.inventory.find(e => e.id === id) || null;
-}
-
-function addItem(id, qty = 1) {
-  const def = UNDRA.ItemRegistry[id];
-  if (!def) {
-    gameLog(`Unbekanntes Item: ${id}`);
-    return;
-  }
-
-  if (def.stackable) {
-    let entry = findInventoryEntry(id);
-    if (!entry) {
-      entry = { id, quantity: 0 };
-      UNDRA.player.inventory.push(entry);
-    }
-    entry.quantity += qty;
-
-    if (def.maxStack && entry.quantity > def.maxStack) {
-      entry.quantity = def.maxStack;
-    }
-  } else {
-    for (let i = 0; i < qty; i++) {
-      UNDRA.player.inventory.push({ id, quantity: 1 });
-    }
-  }
-
-  gameLog(`Item erhalten: ${qty}x ${def.name}`);
-  renderInventory();
-}
-
-function removeItem(id, qty = 1) {
-  const def = UNDRA.ItemRegistry[id];
-  if (!def) return false;
-
-  if (def.stackable) {
-    const entry = findInventoryEntry(id);
-    if (!entry || entry.quantity < qty) {
-      gameLog(`Nicht genug ${def.name}`);
-      return false;
-    }
-
-    entry.quantity -= qty;
-    if (entry.quantity <= 0) {
-      UNDRA.player.inventory = UNDRA.player.inventory.filter(e => e !== entry);
-    }
-  } else {
-    let remaining = qty;
-
-    UNDRA.player.inventory = UNDRA.player.inventory.filter(e => {
-      if (e.id === id && remaining > 0) {
-        remaining--;
-        return false;
-      }
-      return true;
-    });
-
-    if (remaining > 0) {
-      gameLog(`Nicht genug ${def.name}`);
-      return false;
-    }
-  }
-
-  gameLog(`Item entfernt: ${qty}x ${def.name}`);
-  renderInventory();
-  return true;
-}
-
-/* ============================================================
-   EQUIPMENT SYSTEM
-   ============================================================ */
-function equipItem(id) {
-  const def = UNDRA.ItemRegistry[id];
-  if (!def) return;
-
-  if (def.type === "weapon") {
-    UNDRA.player.equipment.weapon = id;
-    gameLog(`Waffe ausgerüstet: ${def.name}`);
-  }
-
-  if (def.type === "armor") {
-    UNDRA.player.equipment.armor = id;
-    gameLog(`Rüstung ausgerüstet: ${def.name}`);
-  }
-
-  renderEquipment();
-  renderPlayer();
-}
-
-function unequipItem(type) {
-  if (type === "weapon") {
-    UNDRA.player.equipment.weapon = null;
-    gameLog("Waffe abgelegt.");
-  }
-
-  if (type === "armor") {
-    UNDRA.player.equipment.armor = null;
-    gameLog("Rüstung abgelegt.");
-  }
-
-  renderEquipment();
-  renderPlayer();
-}
-
-/* ============================================================
-   RENDERER – PLAYER / INVENTORY / EQUIPMENT
-   ============================================================ */
-function renderPlayer() {
-  const box = document.getElementById("player-display");
-  if (!box) return;
-
-  const p = UNDRA.player;
-
-  const hpPct = (p.hp.current / p.hp.max) * 100;
-  const gsPct = (p.gs.current / p.gs.max) * 100;
-  const staPct = (p.stamina.current / p.stamina.max) * 100;
-
-  let html = `<div><strong>${p.name}</strong> ${p.title ? `<span class="pill">${p.title}</span>` : ""}</div>`;
-  html += `<div class="small">Rasse: ${p.race}</div>`;
-  html += `<div class="small">Geld: ${p.money.gold}G ${p.money.silver}S ${p.money.copper}K</div>`;
-
-  html += `
-    <div class="stat-hp">
-      <div class="stat-bar-label"><span>HP</span><span>${p.hp.current}/${p.hp.max}</span></div>
-      <div class="stat-bar"><div class="stat-bar-fill" style="width:${hpPct}%;"></div></div>
-    </div>
-
-    <div class="stat-gs">
-      <div class="stat-bar-label"><span>GS</span><span>${p.gs.current}/${p.gs.max}</span></div>
-      <div class="stat-bar"><div class="stat-bar-fill" style="width:${gsPct}%;"></div></div>
-    </div>
-
-    <div class="stat-sta">
-      <div class="stat-bar-label"><span>STA</span><span>${p.stamina.current}/${p.stamina.max}</span></div>
-      <div class="stat-bar"><div class="stat-bar-fill" style="width:${staPct}%;"></div></div>
-    </div>
-
-    <div class="small">Erschöpfung: ${p.fatigue}</div>
-    <hr>
-  `;
-
-  html += `<div class="attr-grid">`;
-  Object.keys(p.attributes).forEach(a => {
-    html += `<div>${a}</div><div>${p.attributes[a]}</div>`;
-  });
-  html += `</div>`;
-
-  if (p.statusEffects.length) {
-    html += `<hr><div class="small">Status:</div>`;
-    p.statusEffects.forEach(s => {
-      const def = UNDRA.StatusRegistry[s.id];
-      html += `<div class="small">- ${def ? def.name : s.id} (${s.remaining})</div>`;
-    });
-  }
-
-  box.innerHTML = html;
-}
-
-function renderInventory() {
-  const box = document.getElementById("inventory-display");
-  if (!box) return;
-
-  const inv = UNDRA.player.inventory;
-
-  if (!inv.length) {
-    box.innerHTML = "<div class='small'>Inventar leer.</div>";
-    return;
-  }
-
-  let html = "";
-  inv.forEach(e => {
-    const it = UNDRA.ItemRegistry[e.id];
-    html += `<div class="list-line">${e.quantity}x ${it.name}</div>`;
-  });
-
-  box.innerHTML = html;
-}
-
-function renderEquipment() {
-  const box = document.getElementById("equipment-display");
-  if (!box) return;
-
-  const p = UNDRA.player;
-
-  const w = p.equipment.weapon ? UNDRA.ItemRegistry[p.equipment.weapon].name : "keine";
-  const a = p.equipment.armor ? UNDRA.ItemRegistry[p.equipment.armor].name : "keine";
-
-  box.innerHTML = `
-    <div>Waffe: ${w}</div>
-    <div>Rüstung: ${a}</div>
-  `;
-}
-</script>
-<!-- BLOCK 3 END -->
-<!-- BLOCK 4 START -->
-<script>
-/* ============================================================
-   KAMPF-SYSTEM
-   ============================================================ */
-
-let currentEnemy = null;
-let combatRound = 0;
-let playerDefending = false;
-
-/* ------------------------------------------------------------
-   Gegner erzeugen
------------------------------------------------------------- */
-function createEnemy(template) {
-  const base = {
-    name: "Unbekannter Gegner",
-    attributes: {
-      strength: 10,
-      toughness: 10,
-      agility: 10,
-      intellect: 10,
-      perception: 10,
-      willpower: 10,
-      charisma: 10,
-      empathy: 10,
-      presence: 10
-    },
-    hp: { max: 30, current: 30 },
-    gs: { max: 20, current: 20 },
-    stamina: { max: 20, current: 20 },
-    equipment: { weapon: null, armor: null },
-    statusEffects: []
-  };
-
-  return Object.assign(base, deepClone(template));
-}
-
-/* ------------------------------------------------------------
-   Kampf starten / beenden
------------------------------------------------------------- */
-function startCombat(template) {
-  currentEnemy = createEnemy(template);
-  combatRound = 1;
-  playerDefending = false;
-
-  gameLog(`⚔️ Kampf beginnt gegen ${currentEnemy.name}`);
-  renderEnemy();
-  renderCombatControls();
-}
-
-function endCombat(victory) {
-  if (victory) {
-    gameLog(`🏆 Du hast ${currentEnemy.name} besiegt!`);
-  } else {
-    gameLog("⚠️ Der Kampf endet.");
-  }
-
-  currentEnemy = null;
-  combatRound = 0;
-  playerDefending = false;
-
-  renderEnemy();
-  renderCombatControls();
-}
-
-/* ------------------------------------------------------------
-   Angriffswert / Verteidigungswert
------------------------------------------------------------- */
-function getAttackBonus(character) {
-  const str = character.attributes.strength || 10;
-  const agi = character.attributes.agility || 10;
-
-  return Math.floor((str - 10) / 2) + Math.floor((agi - 10) / 2);
-}
-
-function getDefenseValue(character) {
-  const agi = character.attributes.agility || 10;
-  const per = character.attributes.perception || 10;
-
-  const armorId = character.equipment?.armor;
-  const armorVal = armorId ? (UNDRA.ItemRegistry[armorId]?.armorValue || 0) : 0;
-
-  let def = 10
-    + Math.floor((agi - 10) / 2)
-    + Math.floor((per - 10) / 2)
-    + armorVal;
-
-  if (character === UNDRA.player) {
-    def -= Math.floor(UNDRA.player.fatigue / 2);
-  }
-
-  return def;
-}
-
-/* ------------------------------------------------------------
-   Angriffswurf
------------------------------------------------------------- */
-function rollAttack(attacker, defender) {
-  const roll = rollD20();
-  const total = roll + getAttackBonus(attacker);
-  const defense = getDefenseValue(defender);
-
-  const hit = total >= defense;
-
-  gameLog(`[Angriff] ${attacker.name} würfelt ${total} gegen ${defense} → ${hit ? "Treffer" : "Verfehlt"}`);
-
-  return { hit, roll, total, defense };
-}
-
-/* ------------------------------------------------------------
-   Schaden
------------------------------------------------------------- */
-function rollDamage(attacker) {
-  const weaponId = attacker.equipment?.weapon;
-  const w = weaponId ? UNDRA.ItemRegistry[weaponId] : null;
-
-  const min = w?.damage?.min ?? 1;
-  const max = w?.damage?.max ?? 4;
-
-  const base = rollDN(max - min + 1) + (min - 1);
-  const strBonus = Math.floor((attacker.attributes.strength - 10) / 2);
-
-  return Math.max(1, base + strBonus);
-}
-
-/* ============================================================
-   SPIELER-AKTIONEN
-   ============================================================ */
-function playerAttack() {
-  if (!currentEnemy) return;
-
-  spendStamina(2, "Angriff");
-
-  const result = rollAttack(UNDRA.player, currentEnemy);
-  if (!result.hit) {
-    enemyTurn();
-    return;
-  }
-
-  const dmg = rollDamage(UNDRA.player);
-  applyDamage(currentEnemy, dmg, "physisch", "Angriff");
-
-  if (currentEnemy.hp.current <= 0) {
-    endCombat(true);
-    return;
-  }
-
-  enemyTurn();
-}
-
-function playerDefend() {
-  if (!currentEnemy) return;
-
-  playerDefending = true;
-  spendStamina(1, "Verteidigen");
-
-  gameLog("🛡️ Du gehst in Verteidigungshaltung.");
-
-  enemyTurn();
-  playerDefending = false;
-}
-
-function playerSpecialMove() {
-  if (!currentEnemy) return;
-
-  spendStamina(4, "Spezialangriff");
-
-  const result = rollAttack(UNDRA.player, currentEnemy);
-  if (!result.hit) {
-    gameLog("❌ Spezialangriff verfehlt.");
-    enemyTurn();
-    return;
-  }
-
-  let dmg = Math.floor(rollDamage(UNDRA.player) * 1.5);
-  applyDamage(currentEnemy, dmg, "physisch", "Spezialangriff");
-
-  if (rollD20() >= 18) {
-    addStatusEffect(currentEnemy, "stunned", 1);
-    gameLog(`💫 ${currentEnemy.name} ist benommen!`);
-  }
-
-  if (currentEnemy.hp.current <= 0) {
-    endCombat(true);
-    return;
-  }
-
-  enemyTurn();
-}
-
-/* ============================================================
-   GEGNER-KI
-   ============================================================ */
-function enemyTurn() {
-  if (!currentEnemy) return;
-
-  const stunned = currentEnemy.statusEffects?.some(s => s.id === "stunned");
-  if (stunned) {
-    gameLog(`💫 ${currentEnemy.name} ist benommen und handelt nicht.`);
-    nextCombatRound();
-    return;
-  }
-
-  const result = rollAttack(currentEnemy, UNDRA.player);
-  if (!result.hit) {
-    nextCombatRound();
-    return;
-  }
-
-  let dmg = rollDamage(currentEnemy);
-
-  if (playerDefending) {
-    dmg = Math.max(0, dmg - 2);
-    gameLog("🛡️ Deine Verteidigung reduziert den Schaden.");
-  }
-
-  applyDamage(UNDRA.player, dmg, "physisch", `Angriff von ${currentEnemy.name}`);
-
-  if (UNDRA.player.hp.current <= 0) {
-    endCombat(false);
-    return;
-  }
-
-  nextCombatRound();
-}
-
-function nextCombatRound() {
-  combatRound++;
-  gameLog(`— Runde ${combatRound} —`);
-
-  tickStatusEffects(UNDRA.player);
-  if (currentEnemy) tickStatusEffects(currentEnemy);
-
-  renderPlayer();
-  renderEnemy();
-}
-
-/* ============================================================
-   KAMPF-UI
-   ============================================================ */
-function renderCombatControls() {
-  const box = document.getElementById("combat-controls");
-  if (!box) return;
-
-  if (!currentEnemy) {
-    box.innerHTML = "<div class='small'>Kein Kampf aktiv.</div>";
-    return;
-  }
-
-  box.innerHTML = `
-    <button onclick="playerAttack()">Angreifen</button>
-    <button onclick="playerDefend()">Verteidigen</button>
-    <button onclick="playerSpecialMove()">Spezial</button>
-  `;
-}
-
-/* ============================================================
-   GEGNER-RENDERER
-   ============================================================ */
-function renderEnemy() {
-  const box = document.getElementById("enemy-display");
-  if (!box) return;
-
-  if (!currentEnemy) {
-    box.innerHTML = "<div class='small'>Kein Gegner aktiv.</div>";
-    return;
-  }
-
-  let html = `<div><strong>${currentEnemy.name}</strong></div>`;
-  html += `<div>HP: ${currentEnemy.hp.current}/${currentEnemy.hp.max}</div>`;
-  html += `<div>STA: ${currentEnemy.stamina.current}/${currentEnemy.stamina.max}</div>`;
-
-  if (currentEnemy.statusEffects.length) {
-    html += `<div class="small">Status:</div>`;
-    currentEnemy.statusEffects.forEach(s => {
-      const def = UNDRA.StatusRegistry[s.id];
-      html += `<div class="small">- ${def ? def.name : s.id} (${s.remaining})</div>`;
-    });
-  }
-
-  box.innerHTML = html;
-}
-
-/* ============================================================
-   TESTKAMPF
-   ============================================================ */
-function testCombat() {
-  const enemyTemplate = {
-    name: "Goblin-Plünderer",
-    hp: { max: 20, current: 20 },
-    gs: { max: 10, current: 10 },
-    stamina: { max: 20, current: 20 },
-    attributes: {
-      strength: 9,
-      toughness: 8,
-      agility: 12,
-      intellect: 8,
-      perception: 10,
-      willpower: 8,
-      charisma: 6,
-      empathy: 5,
-      presence: 7
-    },
-    equipment: { weapon: "dagger", armor: null },
-    statusEffects: []
-  };
-
-  startCombat(enemyTemplate);
-}
-</script>
-<!-- BLOCK 4 END -->
-<!-- BLOCK 5 START -->
-<script>
-/* ============================================================
-   NPC & DIALOG-SYSTEM
-   ============================================================ */
-
-let currentNPC = null;
-let currentDialogNode = null;
-
-/* NPC erzeugen */
-function createNPC(template) {
-  return deepClone(template);
-}
-
-/* Dialog starten */
-function startDialog(npc) {
-  currentNPC = npc;
-  currentDialogNode = npc.dialogTree.nodes[npc.dialogTree.start];
-
-  gameLog(`💬 Du sprichst mit ${npc.name}.`);
-  renderDialog();
-}
-
-/* Dialogoption wählen */
-function chooseDialogOption(i) {
-  if (!currentDialogNode) return;
-
-  const opt = currentDialogNode.options[i];
-  if (!opt) return;
-
-  /* Skill-Check */
-  if (opt.skill) {
-    const result = performSkillCheck
-      ? performSkillCheck(opt.skill, opt.difficulty || "normal", {
-          consumeStamina: true,
-          staminaCost: 1,
-          label: "Dialogprobe"
-        })
-      : { success: true }; // Fallback
-
-    currentDialogNode = currentNPC.dialogTree.nodes[
-      result.success ? opt.success : opt.fail
-    ];
-
-    renderDialog();
-    return;
-  }
-
-  /* Normale Weiterleitung */
-  if (opt.next) {
-    currentDialogNode = currentNPC.dialogTree.nodes[opt.next];
-    renderDialog();
-    return;
-  }
-
-  /* Dialog beenden */
-  if (opt.end) {
-    gameLog(`💬 Gespräch mit ${currentNPC.name} beendet.`);
-    currentNPC = null;
-    currentDialogNode = null;
-    renderDialog();
-  }
-}
-
-/* Dialog anzeigen */
-function renderDialog() {
-  const box = document.getElementById("dialog-display");
-  if (!box) return;
-
-  if (!currentNPC || !currentDialogNode) {
-    box.innerHTML = "<div class='small'>Kein aktiver Dialog.</div>";
-    return;
-  }
-
-  let html = `<div><strong>${currentNPC.name}</strong></div>`;
-  html += `<div>${currentDialogNode.text}</div><hr>`;
-
-  currentDialogNode.options.forEach((opt, i) => {
-    html += `<button onclick="chooseDialogOption(${i})">${opt.text}</button><br>`;
-  });
-
-  box.innerHTML = html;
-}
-
-/* TEST-NPC */
-function testNPCDialog() {
-  const npc = createNPC({
-    name: "Dorfältester",
-    dialogTree: {
-      start: "n1",
-      nodes: {
-        n1: {
-          text: "Willkommen in unserem Dorf, Fremder.",
-          options: [
-            { text: "Freundlich grüßen", next: "n2" },
-            { text: "Einschüchtern", skill: "intimidation", difficulty: "normal", success: "n3", fail: "n4" },
-            { text: "Auf Wiedersehen", end: true }
-          ]
-        },
-        n2: {
-          text: "Es tut gut, freundliche Gesichter zu sehen.",
-          options: [{ text: "Danke", end: true }]
-        },
-        n3: {
-          text: "Bitte! Tu mir nichts! Ich sage dir alles...",
-          options: [{ text: "Beruhigen", next: "n2" }]
-        },
-        n4: {
-          text: "Du wirkst nicht besonders bedrohlich...",
-          options: [{ text: "Nochmal versuchen", next: "n1" }]
-        }
-      }
-    }
-  });
-
-  startDialog(npc);
-}
-
-/* ============================================================
-   HÄNDLER-SYSTEM
-   ============================================================ */
-
-let currentMerchant = null;
-
-/* Händler erzeugen */
-function createMerchant(template) {
-  return deepClone(template);
-}
-
-/* Händler öffnen */
-function startMerchant(template) {
-  currentMerchant = createMerchant(template);
-
-  gameLog(`🛒 Du betrittst den Laden von ${currentMerchant.name}.`);
-  renderMerchant();
-}
-
-/* Händler anzeigen */
-function renderMerchant() {
-  const box = document.getElementById("merchant-display");
-  if (!box) return;
-
-  if (!currentMerchant) {
-    box.innerHTML = "<div class='small'>Kein Händler aktiv.</div>";
-    return;
-  }
-
-  let html = `<div><strong>${currentMerchant.name}</strong></div>`;
-  html += `<div class="small">Preise: Kaufen x${currentMerchant.priceBuy}, Verkaufen x${currentMerchant.priceSell}</div><hr>`;
-
-  /* Angebot */
-  html += `<div><strong>Angebot:</strong></div>`;
-  if (!currentMerchant.inventory.length) {
-    html += `<div class="small">Keine Waren.</div>`;
-  }
-
-  currentMerchant.inventory.forEach((entry, i) => {
-    const it = UNDRA.ItemRegistry[entry.id];
-    if (!it) return;
-
-    const price = Math.floor((it.value || 1) * currentMerchant.priceBuy);
-
-    html += `
-      <div class="list-line">
-        ${entry.quantity}x ${it.name} – ${price}K
-        <button onclick="buyItem(${i})">Kaufen</button>
-      </div>
-    `;
-  });
-
-  /* Verkauf */
-  html += `<hr><div><strong>Verkaufen:</strong></div>`;
-
-  if (!UNDRA.player.inventory.length) {
-    html += `<div class="small">Du hast nichts zu verkaufen.</div>`;
-  }
-
-  UNDRA.player.inventory.forEach((entry, i) => {
-    const it = UNDRA.ItemRegistry[entry.id];
-    if (!it) return;
-
-    const price = Math.floor((it.value || 1) * currentMerchant.priceSell);
-
-    html += `
-      <div class="list-line">
-        ${entry.quantity}x ${it.name} – ${price}K
-        <button onclick="sellItem(${i})">Verkaufen</button>
-      </div>
-    `;
-  });
-
-  box.innerHTML = html;
-}
-
-/* Kaufen */
-function buyItem(i) {
-  if (!currentMerchant) return;
-
-  const entry = currentMerchant.inventory[i];
-  if (!entry) return;
-
-  const it = UNDRA.ItemRegistry[entry.id];
-  const price = Math.floor((it.value || 1) * currentMerchant.priceBuy);
-
-  if (!subtractMoney(0, 0, price, `Kauf: ${it.name}`)) return;
-
-  addItem(entry.id, 1);
-
-  entry.quantity--;
-  if (entry.quantity <= 0) currentMerchant.inventory.splice(i, 1);
-
-  renderMerchant();
-}
-
-/* Verkaufen */
-function sellItem(i) {
-  if (!currentMerchant) return;
-
-  const entry = UNDRA.player.inventory[i];
-  if (!entry) return;
-
-  const it = UNDRA.ItemRegistry[entry.id];
-  const price = Math.floor((it.value || 1) * currentMerchant.priceSell);
-
-  if (!removeItem(entry.id, 1)) return;
-
-  addMoney(0, 0, price, `Verkauf: ${it.name}`);
-
-  let mEntry = currentMerchant.inventory.find(e => e.id === entry.id);
-  if (!mEntry) {
-    mEntry = { id: entry.id, quantity: 0 };
-    currentMerchant.inventory.push(mEntry);
-  }
-
-  mEntry.quantity++;
-
-  renderMerchant();
-}
-
-/* TEST-HÄNDLER */
-function testMerchant() {
-  startMerchant({
-    name: "Händler Torvan",
-    priceBuy: 1.0,
-    priceSell: 0.5,
-    inventory: [
-      { id: "sword", quantity: 2 },
-      { id: "healthPotion", quantity: 5 },
-      { id: "ironOre", quantity: 10 }
-    ]
-  });
-}
-
-/* ============================================================
-   CRAFTING-SYSTEM
-   ============================================================ */
-
-const CraftingRegistry = {
-  healthPotion: {
-    id: "healthPotion",
-    name: "Heiltrank",
-    skill: "alchemy",
-    difficulty: "normal",
-    workstation: "alchemyTable",
-    ingredients: [
-      { id: "herb", quantity: 2 },
-      { id: "water", quantity: 1 }
-    ],
-    result: { id: "healthPotion", quantity: 1 }
-  },
-
-  ironSword: {
-    id: "ironSword",
-    name: "Eisenschwert",
-    skill: "crafting",
-    difficulty: "hard",
-    workstation: "forge",
-    ingredients: [
-      { id: "ironOre", quantity: 5 },
-      { id: "wood", quantity: 1 }
-    ],
-    result: { id: "sword", quantity: 1 }
-  }
-};
-
-const Workstations = {
-  forge: "Schmiede",
-  alchemyTable: "Alchemietisch"
-};
-
-let currentWorkstation = null;
-
-/* Werkbank benutzen */
-function useWorkstation(type) {
-  if (!Workstations[type]) {
-    gameLog("Unbekannte Werkbank.");
-    return;
-  }
-
-  currentWorkstation = type;
-  gameLog(`🔧 Du benutzt: ${Workstations[type]}`);
-
-  renderCrafting();
-}
-
-/* Zutaten prüfen */
-function hasIngredients(recipe) {
-  return recipe.ingredients.every(ing => {
-    const entry = findInventoryEntry(ing.id);
-    return entry && entry.quantity >= ing.quantity;
-  });
-}
-
-/* Zutaten verbrauchen */
-function consumeIngredients(recipe) {
-  recipe.ingredients.forEach(ing => removeItem(ing.id, ing.quantity));
-}
-
-/* Crafting durchführen */
-function craftItem(recipeId) {
-  if (!currentWorkstation) {
-    gameLog("Keine Werkbank aktiv.");
-    return;
-  }
-
-  const recipe = CraftingRegistry[recipeId];
-  if (!recipe) {
-    gameLog("Unbekanntes Rezept.");
-    return;
-  }
-
-  if (recipe.workstation !== currentWorkstation) {
-    gameLog(`Dieses Rezept benötigt: ${Workstations[recipe.workstation]}`);
-    return;
-  }
-
-  if (!hasIngredients(recipe)) {
-    gameLog("Dir fehlen Materialien.");
-    return;
-  }
-
-  const result = performSkillCheck
-    ? performSkillCheck(recipe.skill, recipe.difficulty, {
-        consumeStamina: true,
-        staminaCost: 2,
-        label: `Herstellung: ${recipe.name}`
-      })
-    : { success: true };
-
-  consumeIngredients(recipe);
-
-  if (!result.success) {
-    gameLog(`❌ Die Herstellung von ${recipe.name} misslingt.`);
-    return;
-  }
-
-  addItem(recipe.result.id, recipe.result.quantity);
-
-  gameLog(`✔️ Herstellung erfolgreich: ${recipe.result.quantity}x ${UNDRA.ItemRegistry[recipe.result.id].name}`);
-
-  renderCrafting();
-}
-
-/* Crafting anzeigen */
-function renderCrafting() {
-  const box = document.getElementById("crafting-display");
-  if (!box) return;
-
-  if (!currentWorkstation) {
-    box.innerHTML = "<div class='small'>Keine Werkbank aktiv. Wähle Schmiede oder Alchemietisch.</div>";
-    return;
-  }
-
-  let html = `<div><strong>Werkbank:</strong> ${Workstations[currentWorkstation]}</div><hr>`;
-
-  const recipes = Object.values(CraftingRegistry).filter(r => r.workstation === currentWorkstation);
-
-  if (!recipes.length) {
-    html += "<div class='small'>Keine Rezepte für diese Werkbank.</div>";
-    box.innerHTML = html;
-    return;
-  }
-
-  recipes.forEach(r => {
-    const canCraft = hasIngredients(r);
-
-    html += `
-      <div><strong>${r.name}</strong> <span class="small">[Skill: ${r.skill}, Schwierigkeit: ${r.difficulty}]</span></div>
-      <div class="small">Benötigt:</div>
-      <ul>
-    `;
-
-    r.ingredients.forEach(ing => {
-      const it = UNDRA.ItemRegistry[ing.id];
-      html += `<li class="small">${ing.quantity}x ${it ? it.name : ing.id}</li>`;
-    });
-
-    html += `
-      </ul>
-      <button onclick="craftItem('${r.id}')" ${canCraft ? "" : "disabled"}>
-        ${canCraft ? "Herstellen" : "Fehlende Materialien"}
-      </button>
-      <hr>
-    `;
-  });
-
-  box.innerHTML = html;
-}
-
-/* TEST-CRAFTING */
-function testCrafting() {
-  useWorkstation("forge");
-}
-</script>
-<!-- BLOCK 5 END -->
-<!-- BLOCK 6 START -->
-<script>
-/* ============================================================
-   WELT-SYSTEM
-   ============================================================ */
-
-UNDRA.World = {
-  regions: {
-    forest: {
-      id: "forest",
-      name: "Der Immerwald",
-      locations: {
-        forestEdge: {
-          id: "forestEdge",
-          name: "Waldrand",
-          encounters: ["goblin", "wolf", "nothing"]
-        },
-        deepForest: {
-          id: "deepForest",
-          name: "Tiefer Wald",
-          encounters: ["wolf", "bandit", "nothing", "nothing"]
-        }
-      }
-    },
-
-    village: {
-      id: "village",
-      name: "Dorf Eichenruh",
-      locations: {
-        market: {
-          id: "market",
-          name: "Marktplatz",
-          encounters: ["merchant", "nothing"]
-        },
-        tavern: {
-          id: "tavern",
-          name: "Taverne 'Zum Krummen Ast'",
-          encounters: ["npc", "nothing"]
-        }
-      }
-    }
-  },
-
-  weather: ["klar", "bewölkt", "regen", "sturm"],
-  timeOfDay: ["morgen", "mittag", "abend", "nacht"]
-};
-
-/* ============================================================
-   REISEN
-   ============================================================ */
-
-function travelTo(regionId, locationId) {
-  const region = UNDRA.World.regions[regionId];
-  if (!region) {
-    gameLog("Unbekannte Region.");
-    return;
-  }
-
-  const loc = region.locations[locationId];
-  if (!loc) {
-    gameLog("Unbekannter Ort.");
-    return;
-  }
-
-  UNDRA.player.position.region = regionId;
-  UNDRA.player.position.location = locationId;
-
-  gameLog(`🌍 Du reist nach: ${region.name} – ${loc.name}`);
-
-  updateWorldState();
-  renderWorld();
-  checkEncounter();
-}
-
-/* ============================================================
-   WETTER & TAGESZEIT
-   ============================================================ */
-
-function updateWorldState() {
-  const w = UNDRA.World.weather;
-  const t = UNDRA.World.timeOfDay;
-
-  UNDRA.player.worldState.weather = w[Math.floor(Math.random() * w.length)];
-  UNDRA.player.worldState.timeOfDay = t[Math.floor(Math.random() * t.length)];
-}
-
-/* ============================================================
-   ZUFALLSBEGEGNUNGEN
-   ============================================================ */
-
-function checkEncounter() {
-  const pos = UNDRA.player.position;
-  const region = UNDRA.World.regions[pos.region];
-  const loc = region.locations[pos.location];
-
-  const list = loc.encounters;
-  const result = list[Math.floor(Math.random() * list.length)];
-
-  if (result === "nothing") {
-    gameLog("Nichts passiert.");
-    return;
-  }
-
-  if (result === "goblin") {
-    gameLog("Ein Goblin taucht auf!");
-    startCombat({
-      name: "Goblin",
-      hp: { max: 18, current: 18 },
-      gs: { max: 10, current: 10 },
-      stamina: { max: 20, current: 20 },
-      attributes: {
-        strength: 9,
-        toughness: 8,
-        agility: 12,
-        intellect: 8,
-        perception: 10,
-        willpower: 8,
-        charisma: 6,
-        empathy: 5,
-        presence: 7
-      },
-      equipment: { weapon: "dagger", armor: null },
-      statusEffects: []
-    });
-    return;
-  }
-
-  if (result === "wolf") {
-    gameLog("Ein Wolf knurrt aus dem Gebüsch!");
-    startCombat({
-      name: "Wolf",
-      hp: { max: 22, current: 22 },
-      gs: { max: 12, current: 12 },
-      stamina: { max: 20, current: 20 },
-      attributes: {
-        strength: 11,
-        toughness: 10,
-        agility: 13,
-        intellect: 6,
-        perception: 12,
-        willpower: 8,
-        charisma: 5,
-        empathy: 4,
-        presence: 6
-      },
-      equipment: { weapon: null, armor: null },
-      statusEffects: []
-    });
-    return;
-  }
-
-  if (result === "bandit") {
-    gameLog("Ein Bandit stellt sich dir in den Weg!");
-    startCombat({
-      name: "Bandit",
-      hp: { max: 25, current: 25 },
-      gs: { max: 15, current: 15 },
-      stamina: { max: 25, current: 25 },
-      attributes: {
-        strength: 10,
-        toughness: 10,
-        agility: 11,
-        intellect: 9,
-        perception: 10,
-        willpower: 9,
-        charisma: 7,
-        empathy: 6,
-        presence: 8
-      },
-      equipment: { weapon: "sword", armor: "leatherArmor" },
-      statusEffects: []
-    });
-    return;
-  }
-
-  if (result === "merchant") {
-    gameLog("Ein reisender Händler erscheint.");
-    testMerchant();
-    return;
-  }
-
-  if (result === "npc") {
-    gameLog("Eine Person spricht dich an.");
-    testNPCDialog();
-    return;
-  }
-}
-
-/* ============================================================
-   WELT-RENDERER
-   ============================================================ */
-
-function renderWorld() {
-  const box = document.getElementById("world-display");
-  if (!box) return;
-
-  const p = UNDRA.player;
-  const region = UNDRA.World.regions[p.position.region];
-  const loc = region.locations[p.position.location];
-
-  box.innerHTML = `
-    <div><strong>Region:</strong> ${region.name}</div>
-    <div><strong>Ort:</strong> ${loc.name}</div>
-    <div><strong>Wetter:</strong> ${p.worldState.weather}</div>
-    <div><strong>Tageszeit:</strong> ${p.worldState.timeOfDay}</div>
-    <hr>
-    <button onclick="travelTo('forest','forestEdge')">Waldrand</button>
-    <button onclick="travelTo('forest','deepForest')">Tiefer Wald</button>
-    <button onclick="travelTo('village','market')">Marktplatz</button>
-    <button onclick="travelTo('village','tavern')">Taverne</button>
-  `;
-}
-
-/* ============================================================
-   DEBUG-TOOLS
-   ============================================================ */
-
-function debugGiveItems() {
-  addItem("ironOre", 10);
-  addItem("herb", 10);
-  addItem("water", 5);
-  addItem("wood", 5);
-  addItem("healthPotion", 3);
-  gameLog("Debug: Materialien hinzugefügt.");
-}
-
-function debugHeal() {
-  UNDRA.player.hp.current = UNDRA.player.hp.max;
-  UNDRA.player.stamina.current = UNDRA.player.stamina.max;
-  gameLog("Debug: HP & STA voll.");
-  renderPlayer();
-}
-
-/* ============================================================
-   INITIALISIERUNG
-   ============================================================ */
-
-function initUNDRA() {
-  gameLog("UNDRA ENGINE v1.0 gestartet.");
-
-  renderPlayer();
-  renderInventory();
-  renderEquipment();
-  renderWorld();
-  renderCombatControls();
-  renderDialog();
-  renderMerchant();
-  renderCrafting();
-}
-
-/* ============================================================
-   SEITE 3 – ENGINE-UI
-   ============================================================ */
-</script>
-
-<style>
-  .engine-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  .engine-box {
-    border: 1px solid #333;
-    padding: 10px;
-    background: #1a1a1a;
-  }
-</style>
-
-<div id="page3" class="panel hidden">
-  <h2>UNDRA ENGINE v1.0</h2>
-
-  <button onclick="UNDRA_applyCharacter(); initUNDRA();">Charakter laden & Engine starten</button>
-  <hr>
-
-  <div class="engine-grid">
-    <div class="engine-box">
-      <h3>Spieler</h3>
-      <div id="player-display"></div>
-    </div>
-
-    <div class="engine-box">
-      <h3>Gegner</h3>
-      <div id="enemy-display"></div>
-      <div id="combat-controls" style="margin-top:6px;"></div>
-      <button onclick="testCombat()">Testkampf</button>
-    </div>
-
-    <div class="engine-box">
-      <h3>Inventar</h3>
-      <div id="inventory-display"></div>
-    </div>
-
-    <div class="engine-box">
-      <h3>Ausrüstung</h3>
-      <div id="equipment-display"></div>
-    </div>
-
-    <div class="engine-box">
-      <h3>Dialog</h3>
-      <div id="dialog-display"></div>
-      <button onclick="testNPCDialog()">Test-NPC</button>
-    </div>
-
-    <div class="engine-box">
-      <h3>Händler</h3>
-      <div id="merchant-display"></div>
-      <button onclick="testMerchant()">Test-Händler</button>
-    </div>
-
-    <div class="engine-box">
-      <h3>Crafting</h3>
-      <div id="crafting-display"></div>
-      <button onclick="useWorkstation('forge')">Schmiede</button>
-      <button onclick="useWorkstation('alchemyTable')">Alchemietisch</button>
-      <button onclick="testCrafting()">Test-Crafting</button>
-    </div>
-
-    <div class="engine-box">
-      <h3>Welt</h3>
-      <div id="world-display"></div>
-    </div>
-
-    <div class="engine-box" style="grid-column: span 2;">
-      <h3>Log</h3>
-      <div id="game-log" style="height:200px; overflow-y:auto; background:#111; padding:6px;"></div>
-    </div>
-  </div>
-</div>
-
-<!-- BLOCK 6 END -->
-  </body>
+</body>
 </html>
