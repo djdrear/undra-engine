@@ -1,631 +1,489 @@
 <!DOCTYPE html>
-
 <html lang="de">
-
 <head>
-
   <meta charset="utf-8" />
-
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-
   <title>Heldenbrief - Edition 2025</title>
-
   <style>
-
     :root {
-
       --bg-dark: #050306;
-
       --panel-bg: linear-gradient(135deg, #1a121a 0%, #0a050a 100%);
-
       --stone-bg: radial-gradient(circle, #3d3d3d 0%, #1a1a1a 100%);
-
       --gold: #d4af37; --gold-bright: #f8e7b0; --gold-shadow: rgba(212, 175, 55, 0.5);
-
       --text: #eaddca; --muted: #a69586; --danger: #ff4b5c;
-
       --header-gradient: linear-gradient(to bottom, rgba(60,10,10,0.9), rgba(30,5,10,1));
-
       --font-header: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
-
       --font-body: 'Georgia', serif;
-
     }
 
-
-
     * { box-sizing: border-box; }
-
     body { margin: 0; background: #050306; color: var(--text); font-family: var(--font-body); min-height: 100vh; }
-
-
 
     #app-shell { width: 950px; margin: 20px auto; background: var(--panel-bg); border: 2px solid var(--gold); position: relative; border-radius: 8px; box-shadow: 0 10px 50px #000; overflow: hidden; }
 
-
-
     header { padding: 20px; background: var(--header-gradient); border-bottom: 2px solid var(--gold); text-align: center; position: relative; }
-
     header h1 { margin: 0; font-family: var(--font-header); color: var(--gold-bright); text-transform: uppercase; letter-spacing: 4px; }
 
-
-
     .step-content { display: none; padding: 20px; }
-
     .step-content.active { display: block; }
 
-
-
     .panel { border: 1px solid var(--gold); margin-bottom: 20px; border-radius: 5px; background: rgba(0,0,0,0.4); overflow: hidden; }
-
     .panel-header { background: var(--header-gradient); padding: 8px 15px; border-bottom: 1px solid var(--gold); color: var(--gold-bright); font-family: var(--font-header); display: flex; justify-content: space-between; font-size: 14px; }
 
-
-
     .identity-grid { display: grid; grid-template-columns: 180px 1fr 240px; gap: 15px; padding: 15px; }
-
     .attr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 30px; padding: 15px; }
-
     .origin-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; background: var(--gold); border: 1px solid var(--gold); height: 300px; }
-
     .origin-col { background: #0a050a; overflow-y: auto; padding: 10px; scrollbar-width: thin; scrollbar-color: var(--gold) #000; }
-
     .origin-col h4 { color: var(--gold); text-align: center; border-bottom: 1px solid var(--gold-shadow); margin-top: 0; font-size: 14px; }
 
-
-
     .btn-main { padding: 10px 20px; border: 2px solid var(--gold); background: #2a1a0a; color: var(--gold); cursor: pointer; font-weight: bold; font-family: var(--font-header); text-transform: uppercase; border-radius: 20px; font-size: 12px; }
-
     .btn-next { background: linear-gradient(to bottom, #8a1515, #500505); color: white; }
-
     .btn-upgrade { width: 22px; height: 22px; background: #1a121a; border: 1px solid var(--gold); color: var(--gold); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; }
-
     .glow { box-shadow: 0 0 10px var(--gold); border-color: var(--gold-bright); color: var(--gold-bright); }
 
-
-
     .attr-row { display: grid; grid-template-columns: 1fr auto 40px auto; gap: 10px; align-items: center; padding: 4px; border-bottom: 1px solid rgba(212,175,55,0.1); }
-
     .val-box { background: #000; border: 1px solid var(--gold); text-align: center; color: var(--gold-bright); border-radius: 3px; font-weight: bold; }
-
     .check-item { display: block; padding: 5px; cursor: pointer; border-bottom: 1px solid #222; font-size: 12px; }
-
     .check-item:hover { background: rgba(212,175,55,0.1); }
-
     .trait-tag { display: inline-block; background: rgba(212,175,55,0.1); border: 1px solid var(--gold-shadow); padding: 2px 8px; margin: 2px; border-radius: 10px; font-size: 11px; }
 
-
-
     .summary-panel-final { background: var(--stone-bg); padding: 30px; border-radius: 4px; box-shadow: inset 0 0 50px #000; border: 2px solid #333; }
-
     .ornamental-frame { border: 1px solid #444; padding: 20px; position: relative; }
-
     .ornamental-frame::before { content: "❦"; position: absolute; top: -10px; left: -10px; color: var(--gold); font-size: 20px; }
 
-
-
     #timeline { position: absolute; right: 0; top: 100px; width: 100px; background: rgba(0,0,0,0.85); border-left: 1px solid var(--gold); padding: 10px; height: 500px; display: none; flex-direction: column; gap: 5px; overflow-y: auto; z-index: 10; border-radius: 8px 0 0 8px; }
-
     .day-check { font-size: 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding: 2px 0; }
 
-
-
     .portrait-frame { width: 160px; height: 210px; border: 2px solid var(--gold); background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 8px; }
-
     .portrait-frame img { width: 100%; height: 100%; object-fit: cover; }
 
-
-
     .status-top-grid { display: grid; grid-template-columns: 1fr 180px 240px; gap: 2px; background: var(--gold); border: 1px solid var(--gold); margin-bottom: 20px; }
-
     .status-cell { background: #0a050a; padding: 15px; font-size: 12px; }
-
     .skill-item { display: flex; justify-content: space-between; align-items: center; padding: 3px 6px; background: rgba(0,0,0,0.3); margin-bottom: 2px; border-radius: 4px; font-size: 11px; }
-
     .inventar-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 15px; }
-
     .inv-slot { display: flex; justify-content: space-between; align-items: center; padding: 4px; border: 1px solid #444; background: rgba(0,0,0,0.4); font-size: 10px; }
 
-
-
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); }
-
     .modal-box { background: var(--panel-bg); border: 2px solid var(--gold); padding: 30px; width: 400px; text-align: center; border-radius: 10px; }
-
     
-
     input[type="text"], input[type="number"] { background: #000; border: 1px solid #444; color: var(--gold-bright); padding: 5px; border-radius: 4px; width: 100%; }
 
-
-
     .rule-hint-red { color: var(--danger); font-size: 11px; text-align: center; font-weight: bold; margin-top: 10px; font-style: italic; }
-
   </style>
-
 </head>
-
 <body>
 
-
-
 <div id="app-shell">
-
   <div id="timeline"></div>
 
-
-
   <header>
-
     <h1 id="main-title">Heldenbrief</h1>
-
     <div id="header-sub-data" style="color: var(--gold); font-size: 13px; margin-top: 5px;"></div>
-
   </header>
 
-
-
   <div id="step-1" class="step-content active">
-
     <div class="panel">
-
       <div class="identity-grid">
-
         <div class="portrait-box">
-
           <div class="portrait-frame"><img id="preview" src="" style="display:none;"><div id="placeholder" style="color:#333">Portrait</div></div>
-
           <input type="file" id="upload" style="font-size: 10px; margin-top: 5px; width: 100%;">
-
         </div>
-
         <div>
-
           <input type="text" id="in-name" placeholder="Name des Helden" style="font-size: 18px; margin-bottom: 10px;">
-
           <input type="text" id="in-titel" placeholder="Zusatz / Titel">
-
           <div style="margin-top: 15px; font-size: 13px; border: 1px solid var(--gold-shadow); padding: 10px; background: rgba(0,0,0,0.2);">
-
             <div><b>Rasse:</b> <span id="s-race">-</span></div>
-
             <div><b>Untergruppe:</b> <span id="s-sub">-</span></div>
-
             <div><b>Profession:</b> <span id="s-prof">-</span></div>
-
             <div style="color: var(--gold-bright); margin-top: 8px;"><b>Spezialfähigkeit:</b> <br><span id="s-spec" style="font-style: italic;">Wähle Volk & Beruf...</span></div>
-
           </div>
-
         </div>
-
         <div class="radar-box" style="background:rgba(0,0,0,0.4); border:1px solid var(--gold); padding:5px;">
-
           <canvas id="radarCanvas" width="220" height="220"></canvas>
-
         </div>
-
       </div>
-
     </div>
 
-
-
     <div class="panel">
-
       <div class="panel-header"><div>Basisattribute</div><small>Maximalstufe je Basisattribut beträgt 10.</small></div>
-
       <div id="attr-grid-s1" class="attr-grid"></div>
-
       <div style="padding: 15px; text-align: center; background: rgba(0,0,0,0.2);">
-
         <button class="btn-main" id="roll-btn">Punkte auswürfeln</button>
-
         <span style="margin-left: 20px;">Punkte: <b id="p-left">0</b></span>
-
       </div>
-
     </div>
-
-
 
     <div class="panel">
-
       <div class="origin-grid">
-
         <div class="origin-col" id="race-list"><h4>Rassen</h4></div>
-
         <div class="origin-col" id="sub-list"><h4>Untergruppen</h4></div>
-
         <div class="origin-col" id="prof-list"><h4>Professionen</h4></div>
-
       </div>
-
     </div>
-
-
 
     <div class="footer-bar" style="padding:15px; display:flex; justify-content:space-between;">
-
       <button class="btn-main" onclick="saveCharacterLocal()">Lokal Speichern</button>
-
       <button class="btn-main btn-next" onclick="toStep2()">Weiter zu Seite 2</button>
-
     </div>
-
   </div>
-
-
 
   <div id="step-2" class="step-content">
-
     <div class="panel">
-
       <div class="panel-header">Körperliche Merkmale & Identität</div>
-
       <div id="id-grid-s2" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 15px; font-size: 12px;"></div>
-
     </div>
-
-
 
     <div class="panel">
-
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--gold);">
-
         <div class="origin-col" style="height: 300px;">
-
           <h4 style="position: sticky; top: 0; background: #0a050a; z-index: 5;">Vorteile (+1 SP)</h4>
-
           <div id="adv-list"></div>
-
         </div>
-
         <div class="origin-col" style="height: 300px;">
-
           <h4 style="position: sticky; top: 0; background: #0a050a; z-index: 5;">Nachteile (+1 SP)</h4>
-
           <div id="dis-list"></div>
-
         </div>
-
       </div>
-
       <div class="rule-hint-red">
-
         Bedingung: Mindestens 2 Vorteile und 3 Nachteile Pflicht. Nachteile müssen Vorteile immer um +1 übersteigen!
-
       </div>
-
     </div>
-
-
 
     <div class="summary-panel-final">
-
       <div class="ornamental-frame">
-
         <h3 style="font-family:var(--font-header); color:var(--gold); text-transform:uppercase; letter-spacing:4px; margin-bottom:15px; border-bottom:1px solid #444;">Helden-Chronik</h3>
-
         <div style="display: grid; grid-template-columns: 1fr 240px; gap: 20px;">
-
           <div id="chronik-text-block" style="font-size: 13px; line-height: 1.5;"></div>
-
           <div style="text-align:center;">
-
             <canvas id="chronikRadar" width="220" height="220" style="transform: scale(0.8);"></canvas>
-
             <div id="chronik-traits-cloud" style="margin-top: 5px;"></div>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
-
-
 
     <div class="footer-bar" style="padding:15px; display:flex; justify-content:space-between; margin-top:20px;">
-
       <button class="btn-main" onclick="toStep1()">Zurück</button>
-
       <button class="btn-main btn-next" id="btn-finish-check" onclick="toStep3()" disabled>Erstellung Abschließen</button>
-
     </div>
-
   </div>
-
-
 
   <div id="step-3" class="step-content">
-
     <div class="status-top-grid">
-
       <div class="status-cell" id="stat-merkmale-final"></div>
-
       <div class="status-cell" style="display:flex; justify-content:center;"><div class="portrait-frame"><img id="final-portrait"></div></div>
-
       <div class="status-cell" style="background:rgba(0,0,0,0.6)"><canvas id="finalRadar" width="220" height="220"></canvas></div>
-
     </div>
-
-
 
     <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
-
       <div class="panel"><div class="panel-header">Basis (50 SP)</div><div id="skills-base" class="origin-col" style="height:220px;"></div></div>
-
       <div class="panel"><div class="panel-header">Rasse (300 SP)</div><div id="skills-race" class="origin-col" style="height:220px;"></div></div>
-
       <div class="panel"><div class="panel-header">Profession (500 SP)</div><div id="skills-prof" class="origin-col" style="height:220px;"></div></div>
-
     </div>
-
-
 
     <div class="panel">
-
         <div class="panel-header">Aktive Attribute (1 Pkt / Tag)</div>
-
         <div id="active-attr-grid" class="attr-grid"></div>
-
     </div>
-
-
 
     <div class="panel" style="display:grid; grid-template-columns: repeat(5, 1fr); padding: 15px; text-align:center; background:var(--header-gradient); border:1px solid var(--gold);">
-
         <div id="calc-le"><b>LEBEN</b><br><span>0</span></div>
-
         <div id="calc-en"><b>AUSDAUER</b><br><span>0</span></div>
-
         <div id="calc-rs"><b>RÜSTUNG</b><br><span>0</span></div>
-
         <div id="calc-gg"><b>GEIST</b><br><span>0</span></div>
-
         <div id="calc-tc"><b>TREFFER%</b><br><span>0</span></div>
-
     </div>
-
-
 
     <div class="panel">
-
       <div class="panel-header">Inventar & Handel</div>
-
       <div class="inventar-grid" id="inv-grid"></div>
-
     </div>
-
-
 
     <div class="footer-bar" style="padding:15px; display:flex; justify-content:space-between; background: rgba(0,0,0,0.8);">
-
       <div style="font-size: 14px; color:var(--gold-bright);">Währung: <span id="currency-display" style="color:var(--gold);">0 G 0 S 0 K</span></div>
-
-      <div style="font-size: 14px; color:var(--gold-bright);">SP: <span id="sp-display" style="color:var(--gold);">5000</span></div>
-
+      <div style="font-size: 14px; color:var(--gold-bright);">SP: <span id="sp-display" style="color:var(--gold);">500</span></div>
       <button class="btn-main btn-next" id="btn-dayend">Tag beenden</button>
-
     </div>
-
   </div>
-
 </div>
 
-
-
 <script>
-
 const attributes = ["Mut", "Intelligenz", "Fingerfertigkeit", "Gewandtheit", "Körperkraft", "Körperbewusstsein", "Konstitution", "Charisma", "Sozialstatus", "Geistiger Zustand", "Intuition", "Angriff", "Verteidigung", "Abwehrschlag", "Fernkampf", "Trefferchance", "Technik"];
-
 const attrShort = ["MU", "IN", "FF", "GE", "KK", "KB", "KO", "CH", "SS", "GZ", "IT", "AN", "VE", "AS", "FK", "TC", "TE"];
 
-
-
 const originData = {
-
     "Mensch": { subs: ["Mittelländer", "Tulamiden", "Thorwaler"], profs: ["Ritter", "Dieb", "Händler", "Feuermagier", "Druide"] },
-
     "Elf": { subs: ["Hochelf", "Waldelf", "Dunkelelf"], profs: ["Wildnisläufer", "Necromant", "Druide", "Sänger"] },
-
     "Zwerg": { subs: ["Ambosszwerg", "Erzzwerg"], profs: ["Waffenschmied", "Bergmann"] },
-
-    "Ork": { subs: ["Schwarzpelz", "Zholochai"], profs: ["Krieger", "Schamane"] }
-
+    "Ork": { subs: ["Schwarzpelz", "Zholochai"], profs: ["Krieger", "Schamane"] },
+    "Halbling":{ subs:["Auen-Halbling","Stadt-Halbling","Wald-Halbling"], profs:["Späher","Dieb","Koch","Barde","Fernkämpfer"]},
+    "Gnom":{subs:["Felsgnom","Waldgnom","Tüftlergnom"],profs:["Illusionist","Alchemist","Tüftler","Mechanikus","Trickser"]},
+    "Troll":{subs:["Bergtroll","Höhlentroll","Flusstroll","Felsentroll"],profs:["Berserker","Schamane","Steinwerfer","Stammeskrieger"]},
+    "Goblin":{subs:["Rotpelz","Stadtgoblin","Wildgoblin","Sumpfgoblin"],profs:["Kundschafter","Dieb","Hexer","Speerträger","Saboteur"]},
+    "Drachengeborener":{subs:["Flammenbrut","Frostschuppe","Sturmgeboren","Säureschuppe"],profs:["Krieger","Kampfmagier","Paladin","Drachendisciple"]},
+    "Echsenmensch":{subs:["Sumpfechse","Wüstenechse","Dschungelbrut","Tempelbrut"],profs:["Speerträger","Schamane","Tempelwächter","Pirscher"]},
+    "Tabaxi":{subs:["Wüsten-Tabaxi","Dschungel-Tabaxi","Schnee-Tabaxi","Steppen-Tabaxi"],profs:["Jäger","Späher","Klingenmeister","Akrobat","Dieb"]}
 };
 
-
-
 const idFields = [
-
     {id:"age",l:"Alter"},{id:"size",l:"Größe"},{id:"weight",l:"Gewicht"},{id:"eyes",l:"Augen"},
-
     {id:"hair",l:"Haare"},{id:"skin",l:"Haut/Fell"},{id:"hand",l:"Hand"},{id:"voice",l:"Stimme"},
-
     {id:"clothes",l:"Kleidung"},{id:"spec",l:"Besonderes"},{id:"origin",l:"Heimat"},{id:"scent",l:"Geruch"}
-
 ];
-
-
 
 const advPool = ["Wachsam", "Wetterfest", "Tierfreund", "Gutes Gehör", "Sprachtalent", "Richtungssinn", "Eisernes Gedächtnis", "Zäher Hund", "Glückspilz", "Scharfe Sicht", "Balance-Gefühl", "Hohe Schmerzgrenze", "Giftresistenz", "Eiserner Wille", "Diplomat", "Handwerksgeschick", "Orientierung", "Tarnung", "Lügendetektor", "Guter Tänzer", "Adeliges Blut", "Amphibisch", "Astrale Regeneration", "Beidhändigkeit", "Brunnen der Kraft", "Dunkelsicht", "Eisresistenz", "Empathie", "Entfernungssinn", "Fährtensinn", "Feenfreund", "Flink", "Gefahreninstinkt", "Geisteskraft", "Hitzeresistenz", "Immunität gegen Gift", "Innere Uhr", "Intuitive Führung", "Kälteresistenz", "Kampfreflexe", "Magiegespür", "Meisterdieb", "Pflanzenflüsterer", "Prophetische Träume", "Schnelle Heilung", "Schlangenmensch", "Tiersprache", "Unauffällig", "Waffenmeister", "Zwergennase"];
 
-
-
 const disPool = ["Farbenblind", "Tiefschläfer", "Platzangst", "Aberglaube", "Wasserscheu", "Höhenangst", "Goldgier", "Tollpatsch", "Nachtblind", "Kurzsichtig", "Schwerhörig", "Lahmheit", "Einäugig", "Alpträume", "Pechvogel", "Jähzorn", "Neugierig", "Verschwendungssüchtig", "Feigheit", "Arroganz", "Blutrausch", "Einbildung", "Eitelkeit", "Geiz", "Hässlichkeit", "Hitzeempfindlichkeit", "Kälteempfindlichkeit", "Krankheitsanfällig", "Lichtempfindlich", "Meeresangst", "Messie", "Misstrauen", "Nahrungsrestriktion", "Pechmagnet", "Platzangst", "Raumangst", "Schlaflosigkeit", "Schulden", "Sensibler Magen", "Spinnenangst", "Spielsucht", "Sprachfehler", "Streitsucht", "Totenangst", "Unbeholfenheit", "Vergesslichkeit", "Verpflichtungen", "Vorurteile", "Wutanfälle", "Zittrige Hände"];
 
-
-
 let char = {
-
     name: "", titel: "", attrs: {}, pool: 0, used: 0,
-
     race: "", sub: "", prof: "", special: "",
-
     identity: {}, adv: [], dis: [],
-
-    sp: 5000, day: 1, gold: 0, silber: 0, kupfer: 0,
-
+    sp: 500, day: 1, gold: 0, silber: 0, kupfer: 0,
     skills: { base: {}, race: {}, prof: {} },
-
     dailyPoints: 0, dayEnded: false
-
 };
 
-
-
 function init() {
-
     const grid1 = document.getElementById('attr-grid-s1');
-
     attributes.forEach(a => {
-
         char.attrs[a] = 0;
-
         grid1.innerHTML += `
-
             <div class="attr-row" id="row-${a}">
-
                 <span style="font-size:12px;">${a}</span>
-
                 <button class="btn-step" onclick="modAttr('${a}',-1)">▼</button>
-
                 <div class="val-box" id="v-${a}">0</div>
-
                 <button class="btn-step btn-plus" id="plus-${a}" onclick="modAttr('${a}',1)">▲</button>
-
             </div>`;
-
     });
-
-
 
     const rList = document.getElementById('race-list');
-
     Object.keys(originData).forEach(r => rList.innerHTML += `<div class="check-item" onclick="selectRace('${r}')">${r}</div>`);
 
-
-
     const idGrid = document.getElementById('id-grid-s2');
-
     idFields.forEach(f => idGrid.innerHTML += `<div><span style="color:var(--muted)">${f.l}</span><input type="text" oninput="char.identity['${f.id}']=this.value"></div>`);
 
-
-
     renderTraits();
-
     initInventar();
-
     updateUI();
-
 }
-
-
 
 function modAttr(a, v) {
-
     if (v > 0 && (char.pool - char.used <= 0 || char.attrs[a] >= 10)) return;
-
     if (v < 0 && char.attrs[a] <= 0) return;
-
     char.attrs[a] += v; char.used += v;
-
     updateUI();
-
 }
-
-
 
 function selectRace(r) {
-
     char.race = r;
-
     const sList = document.getElementById('sub-list'); sList.innerHTML = "<h4>Untergruppen</h4>";
-
     originData[r].subs.forEach(s => sList.innerHTML += `<div class="check-item" onclick="selectSub('${s}')">${s}</div>`);
-
     updateUI();
-
 }
-
-
 
 function selectSub(s) {
-
     char.sub = s;
-
     const pList = document.getElementById('prof-list'); pList.innerHTML = "<h4>Professionen</h4>";
-
     originData[char.race].profs.forEach(p => pList.innerHTML += `<div class="check-item" onclick="selectProf('${p}')">${p}</div>`);
-
     updateUI();
-
 }
-
-
 
 function selectProf(p) {
-
     char.prof = p;
-
     char.special = ["Göttlicher Funke", "Schattenlauf", "Manaschild", "Eisenzorn"][Math.floor(Math.random()*4)];
-
     updateUI();
-
 }
-
-
 
 function updateUI() {
-
     document.getElementById('p-left').textContent = char.pool - char.used;
-
     document.getElementById('s-race').textContent = char.race || "-";
-
     document.getElementById('s-sub').textContent = char.sub || "-";
-
     document.getElementById('s-prof').textContent = char.prof || "-";
-
     document.getElementById('s-spec').textContent = char.special || "-";
-
     
-
     attributes.forEach(a => {
-
         const val = char.attrs[a];
-
         document.getElementById(`v-${a}`).textContent = val;
-
         const btn = document.getElementById(`plus-${a}`);
-
         btn.style.opacity = (char.pool - char.used <= 0 || val >= 10) ? "0.2" : "1";
-
     });
-
     drawRadar("radarCanvas");
-
 }
 
-
-
 function drawRadar(id) {
-
     const canvas = document.getElementById(id), ctx = canvas.getContext("2d"), cx = 110, cy = 110, r = 70;
-
     ctx.clearRect(0,0,220,220);
-
     const step = (Math.PI*2)/attributes.length;
-
     ctx.strokeStyle = "rgba(212,175,55,0.2)";
-
     attributes.forEach((a, i) => {
-
         const angle = step*i - Math.PI/2;
-
         ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(angle)*r, cy+Math.sin(angle)*r); ctx.stroke();
-
         ctx.fillStyle = "var(--gold)"; ctx.font = "8px serif";
+        ctx.fillText(attrShort[i], cx+Math.cos(angle)*(r+12)-5, cy+Math.sin(angle)*(r+12)+3);
+    });
+    ctx.beginPath(); ctx.strokeStyle = "var(--gold-bright)"; ctx.lineWidth = 2; ctx.fillStyle = "rgba(212,175,55,0.4)";
+    attributes.forEach((a, i) => {
+        const val = (char.attrs[a]/10)*r; const angle = step*i - Math.PI/2;
+        const x = cx+Math.cos(angle)*val, y = cy+Math.sin(angle)*val;
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+}
 
-        ctx.fillText(attrShort[i], cx+Math.cos(angle)*(r+12)-5, cy+Math.sin(angle)*(r+12)
+function renderTraits() {
+    const advList = document.getElementById('adv-list'), disList = document.getElementById('dis-list');
+    advList.innerHTML = ""; disList.innerHTML = "";
+    advPool.forEach(name => {
+        advList.innerHTML += `<label class="check-item"><input type="checkbox" onchange="updateChronik()" data-type="adv" value="${name}"> ${name}</label>`;
+    });
+    disPool.forEach(name => {
+        disList.innerHTML += `<label class="check-item"><input type="checkbox" onchange="updateChronik()" data-type="dis" value="${name}"> ${name}</label>`;
+    });
+}
+
+function updateChronik() {
+    char.adv = Array.from(document.querySelectorAll('#adv-list input:checked')).map(i => i.value);
+    char.dis = Array.from(document.querySelectorAll('#dis-list input:checked')).map(i => i.value);
+    
+    const btn = document.getElementById('btn-finish-check');
+    const isValid = (char.adv.length >= 2 && char.dis.length >= 3 && char.dis.length === (char.adv.length + 1));
+    btn.disabled = !isValid;
+    btn.style.opacity = btn.disabled ? "0.3" : "1";
+
+    document.getElementById('chronik-text-block').innerHTML = `
+        <p><b>${char.name}</b>, ${char.titel} <br> Volk: ${char.race} (${char.sub}) <br> Beruf: ${char.prof}</p>
+        <div style="display:grid; grid-template-columns:1fr 1fr; border-top:1px solid #444; padding-top:10px;">
+            ${idFields.map(f => `<div><span style="color:var(--muted)">${f.l}:</span> ${char.identity[f.id]||"-"}</div>`).join('')}
+        </div>
+    `;
+    document.getElementById('chronik-traits-cloud').innerHTML = [...char.adv, ...char.dis].map(t => `<span class="trait-tag">${t}</span>`).join('');
+    drawRadar("chronikRadar");
+}
+
+function toStep2() {
+    char.name = document.getElementById('in-name').value;
+    char.titel = document.getElementById('in-titel').value;
+    document.getElementById('step-1').classList.remove('active');
+    document.getElementById('step-2').classList.add('active');
+    document.getElementById('header-sub-data').textContent = char.name + " | " + char.titel;
+    updateChronik();
+}
+
+function toStep3() {
+    document.getElementById('step-2').classList.remove('active');
+    document.getElementById('step-3').classList.add('active');
+    document.getElementById('timeline').style.display = "flex";
+    initPage3();
+}
+
+function initPage3() {
+    const finalInf = document.getElementById('stat-merkmale-final');
+    finalInf.innerHTML = `<div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
+        ${idFields.map(f => `<div><b>${f.l}:</b> ${char.identity[f.id]||"-"}</div>`).join('')}
+    </div><div style="margin-top:10px; border-top:1px solid var(--gold);">${char.race} | ${char.prof} | ${char.special}</div>`;
+    
+    document.getElementById('final-portrait').src = document.getElementById('preview').src;
+    drawRadar("finalRadar");
+
+    renderSkillBlock('skills-base', ["Klettern", "Schwimmen", "Schleichen", "Orientierung", "Sinnenschärfe", "Heilkunde", "Reiten", "Singen", "Springen", "Zechen"], 'base', 50);
+    renderSkillBlock('skills-race', [char.race+"-Kunde", "Nachtsicht", "Waldlauf", "Steingespür"], 'race', 300);
+    renderSkillBlock('skills-prof', [char.prof+"-Wissen", "Waffenfokus", "Magiesinn"], 'prof', 500);
+
+    const actGrid = document.getElementById('active-attr-grid'); actGrid.innerHTML = "";
+    attributes.forEach((a, i) => {
+        actGrid.innerHTML += `
+            <div class="attr-row">
+                <span>${a}</span><div class="val-box" id="stat3-v-${i}">${char.attrs[a]}</div>
+                <button class="btn-upgrade ${char.dailyPoints>0?'glow':''}" onclick="upgradeStat3(${i})">▲</button>
+            </div>`;
+    });
+    updateStatsCalc();
+    updateTimeline();
+}
+
+function renderSkillBlock(id, list, type, cost) {
+    const cont = document.getElementById(id); cont.innerHTML = "";
+    list.forEach((s, i) => {
+        if(!char.skills[type][i]) char.skills[type][i] = 0;
+        cont.innerHTML += `<div class="skill-item"><span>${s}</span><div style="display:flex; gap:5px; align-items:center;">
+            <span id="lv-${type}-${i}">${char.skills[type][i]}</span>
+            <button class="btn-upgrade ${char.sp>=cost?'glow':''}" onclick="buySkill('${type}',${i},${cost})">▲</button>
+        </div></div>`;
+    });
+}
+
+function buySkill(type, i, cost) {
+    if(char.sp >= cost && char.skills[type][i] < 10) {
+        char.sp -= cost; char.skills[type][i]++;
+        document.getElementById(`lv-${type}-${i}`).textContent = char.skills[type][i];
+        document.getElementById('sp-display').textContent = char.sp;
+    }
+}
+
+function upgradeStat3(i) {
+    if(char.dailyPoints > 0 && char.attrs[attributes[i]] < 20) {
+        char.attrs[attributes[i]]++; char.dailyPoints--;
+        initPage3();
+    }
+}
+
+function updateStatsCalc() {
+    document.getElementById('calc-le').querySelector('span').textContent = char.attrs["Konstitution"] * 10 + 30;
+    document.getElementById('calc-en').querySelector('span').textContent = char.attrs["Mut"] * 5;
+    document.getElementById('calc-gg').querySelector('span').textContent = char.attrs["Geistiger Zustand"] * 5;
+    document.getElementById('calc-tc').querySelector('span').textContent = char.attrs["Trefferchance"] * 4 + "%";
+}
+
+function initInventar() {
+    const grid = document.getElementById('inv-grid');
+    for(let i=0; i<30; i++) grid.innerHTML += `<div class="inv-slot">Slot ${i+1} <button class="btn-upgrade" onclick="openSell(${i})">$</button></div>`;
+}
+
+let currentSlot = 0;
+function openSell(i) { currentSlot = i; document.getElementById('sell-modal').style.display = 'flex'; }
+function confirmSell() {
+    char.gold += parseInt(document.getElementById('v-gold').value) || 0;
+    char.silber += parseInt(document.getElementById('v-silber').value) || 0;
+    char.kupfer += parseInt(document.getElementById('v-kupfer').value) || 0;
+    document.getElementById('currency-display').textContent = `${char.gold} G ${char.silber} S ${char.kupfer} K`;
+    document.getElementById('sell-modal').style.display = 'none';
+}
+
+document.getElementById('btn-dayend').onclick = () => {
+    if(char.dayEnded) return;
+    char.dayEnded = true; char.dailyPoints = 1; char.sp += 1000;
+    document.getElementById('thanks-text').textContent = `Tag ${char.day} abgeschlossen. Du erhältst 1000 SP and 1 Attributpunkt.`;
+    document.getElementById('thanks-modal').style.display = 'flex';
+    updateTimeline(); initPage3();
+};
+
+function updateTimeline() {
+    const tl = document.getElementById('timeline'); tl.innerHTML = "";
+    for(let i=1; i<=30; i++) tl.innerHTML += `<div class="day-check">Tag ${i} <input type="checkbox" ${i<=char.day && char.dayEnded?'checked':''} disabled></div>`;
+}
+
+function closeThanks() { 
+    document.getElementById('thanks-modal').style.display = 'none';
+    if(char.day < 30) { char.day++; char.dayEnded = false; }
+}
+
+document.getElementById('roll-btn').onclick = function() { char.pool = 60; this.disabled = true; updateUI(); };
+document.getElementById('upload').onchange = (e) => {
+    const r = new FileReader(); r.onload = (ev) => { 
+        document.getElementById('preview').src = ev.target.result; document.getElementById('preview').style.display = "block";
+        document.getElementById('placeholder').style.display = "none";
+    }; r.readAsDataURL(e.target.files[0]);
+};
+
+function saveCharacterLocal() {
+    let s = JSON.parse(localStorage.getItem('rpg_saves') || '[]');
+    if(s.length >= 6) s.shift(); s.push(char);
+    localStorage.setItem('rpg_saves', JSON.stringify(s));
+    alert("Gespeichert!");
+}
+
+init();
+</script>
+</body>
+</html>
