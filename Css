@@ -1,0 +1,85 @@
+/* ============================================
+   BLOODCORE R2 – GLOBAL MASTER STYLE
+   UNDRA Engine – Arcane Gothic Edition
+   ============================================ */
+
+/* ---------- Farbvariablen ---------- */
+:root {
+    --r2-bg: #0a0a0f;                 /* tiefes violett-schwarz */
+    --r2-bg-panel: #11111a;           /* dunkler Panel-Hintergrund */
+    --r2-violet: #6b3aff;             /* kaltes Arcane-Violett */
+    --r2-violet-glow: rgba(107, 58, 255, 0.45);
+    --r2-silver: #c7c7d1;             /* metallisches Silber */
+    --r2-steel: #3a3a45;              /* dunkler Stahl */
+    --r2-text: #d8d8e0;               /* hellgrauer Text */
+    --r2-text-dim: #9a9aa5;           /* abgeschwächter Text */
+}
+
+/* ---------- Globaler Hintergrund ---------- */
+body {
+    background: var(--r2-bg);
+    color: var(--r2-text);
+    font-family: "Cinzel", "Trajan Pro", serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* ---------- R2-Container ---------- */
+.r2-block {
+    background: var(--r2-bg-panel);
+    border: 2px solid var(--r2-steel);
+    box-shadow: 0 0 12px var(--r2-violet-glow);
+    padding: 14px;
+    margin: 18px auto;
+    width: min(90%, 900px);
+}
+
+/* ---------- Überschriften ---------- */
+.r2-title {
+    color: var(--r2-silver);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 1.6rem;
+    margin-bottom: 12px;
+    text-shadow: 0 0 8px var(--r2-violet-glow);
+}
+
+/* ---------- Buttons ---------- */
+.r2-btn {
+    background: var(--r2-steel);
+    border: 2px solid var(--r2-silver);
+    color: var(--r2-text);
+    padding: 10px 18px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.r2-btn:hover {
+    border-color: var(--r2-violet);
+    color: var(--r2-violet);
+    box-shadow: 0 0 10px var(--r2-violet-glow);
+}
+
+/* ---------- Inputs ---------- */
+.r2-input, .r2-select {
+    width: 100%;
+    padding: 8px;
+    background: #0f0f15;
+    border: 1px solid var(--r2-steel);
+    color: var(--r2-text);
+    margin-bottom: 12px;
+}
+
+.r2-input:focus, .r2-select:focus {
+    border-color: var(--r2-violet);
+    box-shadow: 0 0 8px var(--r2-violet-glow);
+    outline: none;
+}
+
+/* ---------- Divider ---------- */
+.r2-divider {
+    border-bottom: 1px solid var(--r2-steel);
+    margin: 14px 0;
+}
